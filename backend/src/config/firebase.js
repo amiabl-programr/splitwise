@@ -1,15 +1,9 @@
 import admin from "firebase-admin";
-import fs from "fs";
-import path from "path";
 import dotenv from "dotenv";
 
 dotenv.config(); // Load environment variables
 
-// Path to the service account file
-const serviceAccountPath = path.resolve(process.env.SERVICE_ACCOUNT_PATH);
-
-// Load and parse the service account JSON file
-const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, "utf8"));
+const serviceAccount = JSON.parse(Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_JSON, 'base64').toString('utf-8'));
 
 // Initialize Firebase Admin SDK
 if (!admin.apps.length) {
