@@ -1,21 +1,18 @@
-// Server.ts
+
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import dotenv from 'cookie-parser';
 import authRoutes from "./routes/authRoutes.js";
 
 const app = express();
 app.use(express.json());
-app.use(dotenv());
+app.use(cookieParser());
+app.use(cors());
 
-app.use("/api/auth", authRoutes);
+app.use("/api", authRoutes);
 
 app.get("/", (req, res) => {
-    res.json({
-        message: "Home",
-       
-    });
+   res.send("hi");
 });
 
 const PORT = process.env.PORT || 5000;
