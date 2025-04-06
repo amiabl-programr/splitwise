@@ -12,12 +12,13 @@
     "prepare": "cd .. && husky frontend/.husky"
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --cache --fix --ext .tsx --ext .ts"
+    "*.{ts,tsx,css}": [
+      "eslint . --fix --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
     ],
     "*.{ts,tsx,css,json,html}": [
       "prettier --write --ignore-unknown"
-    ]
+    ],
+    "*.{js,jsx,ts,tsx}": "bash -c 'tsc --noEmit'"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.2",
