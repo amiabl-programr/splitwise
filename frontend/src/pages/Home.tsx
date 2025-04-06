@@ -6,7 +6,7 @@ import How from '@/components/landing/How'
 import Preview from '@/components/landing/Preview'
 import What from '@/components/landing/What'
 import Why from '@/components/landing/Why'
-import { Button } from '@/components/ui/button'
+import Button from '@/components/ui/button'
 
 const Home: React.FC = () => {
   return (

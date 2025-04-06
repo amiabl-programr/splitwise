@@ -1,6 +1,5 @@
 import React from 'react'
 import { Card, CardContent } from '../ui/card'
-
 const Features: React.FC = () => {
   return (
     <section id="features" className="bg-rose-50 py-16 md:py-24">
