@@ -13,7 +13,8 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "eslint --cache --fix --ext .tsx --ext .ts"
+      "eslint --cache --fix --ext .tsx --ext .ts",
+      "tsc --noEmit"
     ],
     "*.{ts,tsx,css,json,html}": [
       "prettier --write --ignore-unknown"
