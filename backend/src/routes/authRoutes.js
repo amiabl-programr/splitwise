@@ -1,12 +1,16 @@
 import express from 'express';
 import {login, signup, logout}  from '../controllers/authController.js';
-import verifyToken from '../verification/verifyToken.js';
+import { createGroups, getAllGroups} from '../controllers/groupController.js'
+import verifyAuthToken from '../middleware/verifyAuthToken.js';
+import verifySessionToken from "../middleware/verifySessionToken.js";
 
 const router = express.Router();
 
-router.post("/login",verifyToken, login);
+router.post("/login",verifyAuthToken, login);
 router.post("/signup", signup);
 router.post("/logout", logout);
+router.post("/create-group", verifySessionToken, createGroups);
+router.get("/groups", verifySessionToken, getAllGroups);
 
 
 
