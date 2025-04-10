@@ -45,4 +45,27 @@ async function getAllGroups(req, res) {
 
 }
 
-export  { createGroups, getAllGroups};
+async function deleteGroup(req, res) {
+  const groupId = req.params.groupId;
+  const userId = req.user.uid;
+
+  try {
+    const groupDoc = await groupDatabaseReference.doc(groupId).get();
+    if (!groupDoc.exists) {
+      return res.status(404).json({ message: "No groups found" });
+    }
+
+    const groupData = groupDoc.data();
+    if (groupData.ownerId !== userId) {
+      return res.status(403).json({ message: "Only the owner can delete this group" });
+    }
+
+    await groupDatabaseReference.doc(groupId).delete();
+    res.status(200).json({ message: "Group deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete group" });
+  }
+}
+
+
+export  { createGroups, getAllGroups, deleteGroup};
