@@ -12,21 +12,23 @@
     "prepare": "cd .. && husky frontend/.husky"
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --cache --fix --ext .tsx --ext .ts",
-      "tsc --noEmit"
+    "*.{ts,tsx,css}": [
+      "eslint . --fix --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
     ],
     "*.{ts,tsx,css,json,html}": [
       "prettier --write --ignore-unknown"
-    ]
+    ],
+    "*.{js,jsx,ts,tsx}": "bash -c 'tsc -b ./tsconfig.json'"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.0.1",
     "@radix-ui/react-slot": "^1.1.2",
     "@tailwindcss/postcss": "^4.0.17",
     "@tanstack/react-query": "^5.69.0",
     "axios": "^1.8.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "firebase": "^11.6.0",
     "framer-motion": "^12.6.2",
     "lucide-react": "^0.484.0",
     "postcss": "^8.5.3",

@@ -15,7 +15,7 @@ async function login(req, res) {
         const options = {
             maxAge: expiresIn,
             httpOnly: true,
-            secure: true, // Set to true in production
+            secure: false, // Set to true in production
             sameSite: "Strict"
         };
 
@@ -32,7 +32,7 @@ async function login(req, res) {
 async function signup(req, res){
     const { email, uid, username } = req.body;
     
-if (!email || !uid || !username) {
+  if (!email || !uid || !username) {
     return res.status(400).json({ success: false, message: "Missing fields" });
   }
     console.log("Saving user:", { email, uid, username });
