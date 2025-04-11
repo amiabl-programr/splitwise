@@ -1,6 +1,6 @@
 import admin from "../config/firebase.js";
 
-export default async function verifyToken(req,res, next){
+export default async function verifyAuthToken(req,res, next){
     const idToken = req.body.idToken;
     if (!idToken) {
         return res.status(400).json({ error: "Missing ID token in request body" });
