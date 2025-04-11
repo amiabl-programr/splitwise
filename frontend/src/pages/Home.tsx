@@ -7,6 +7,7 @@ import Preview from '@/components/landing/Preview'
 import What from '@/components/landing/What'
 import Why from '@/components/landing/Why'
 import { Button } from '@/components/ui/button'
+import { Link } from 'react-router'
 
 const Home: React.FC = () => {
   return (
@@ -42,7 +43,7 @@ const Home: React.FC = () => {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             <Button className="bg-white text-rose-500 hover:bg-gray-100 px-8 py-6 rounded-xl text-lg transition-transform hover:scale-105">
-              Get Started
+              <Link to="/signup">Get Started</Link>
             </Button>
             <Button
               variant="outline"
