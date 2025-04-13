@@ -51,18 +51,18 @@ const Signup = () => {
           }),
         }
       )
-
       const result = await response.json()
-      if (result.success) {
-        toast.success('Sign up successful!')
-        navigate('/signin')
-      } else {
-        toast.error('Error during sign-up')
-      }
+      console.log(result)
+      toast.success(result.message)
+      navigate('/signin')
     } catch (error) {
       setLoading(false)
-      console.log(error)
-      toast.error('Error during sign-up')
+      console.log('sign-in error', error)
+      if (error instanceof Error) {
+        toast.error(error.message)
+      } else {
+        toast.error('An unknown error occured')
+      }
     }
   }
 
@@ -198,10 +198,9 @@ const Signup = () => {
               </div>
               <button
                 type="submit"
-                disabled={loading}
-                className="w-full cursor-pointer bg-[#FF432A] text-[#FFFFFF] shadow-lg backdrop-blur-md font-normal text-base rounded-full !py-2"
+                className={`w-full cursor-pointer bg-[#FF432A] text-[#FFFFFF] shadow-lg backdrop-blur-md font-normal text-base rounded-full !py-2 ${loading ? '!cursor-not-allowed opacity-50' : ''}`}
               >
-                Register
+                {loading ? 'loading' : 'Register'}
               </button>
               <ToastContainer />
             </form>
