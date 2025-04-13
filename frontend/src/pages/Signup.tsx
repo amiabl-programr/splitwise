@@ -53,8 +53,12 @@ const Signup = () => {
       )
       const result = await response.json()
       console.log(result)
-      toast.success(result.message)
-      navigate('/signin')
+      if (result.success) {
+        toast.success(result.message)
+        navigate('/signin')
+      } else {
+        toast.error((result.error as Error).message)
+      }
     } catch (error) {
       setLoading(false)
       console.log('sign-in error', error)
