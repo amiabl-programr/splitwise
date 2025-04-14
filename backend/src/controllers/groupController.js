@@ -67,5 +67,4 @@ async function deleteGroup(req, res) {
   }
 }
 
-
 export  { createGroups, getAllGroups, deleteGroup};
