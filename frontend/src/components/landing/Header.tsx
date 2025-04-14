@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Menu, X } from 'lucide-react'
+import { Link } from 'react-router'
 
 const navItems = [
   { name: 'Features', href: '#features' },
@@ -85,7 +86,7 @@ const Header: React.FC = () => {
             transition={{ duration: 0.3, delay: 0.5 }}
           >
             <Button className="bg-rose-500 hover:bg-rose-600 text-white">
-              Get Started
+              <Link to="/signup">Get Started</Link>
             </Button>
           </motion.div>
         </div>

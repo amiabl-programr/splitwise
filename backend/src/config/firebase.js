@@ -12,7 +12,7 @@ const serviceAccountPath = path.resolve(process.env.SERVICE_ACCOUNT_PATH);
 const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, "utf8"));
 
 // Initialize Firebase Admin SDK
-if (!admin.apps.length) {
+if (!admin.apps.length) {   
     admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
     });

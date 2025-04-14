@@ -1,4 +1,5 @@
-import admin from "../config/firebase.js"
+import admin from "../config/firebase.js";
+import { sendEmail } from "../config/mailservice.js";
 
 const db = admin.firestore();
 
@@ -61,10 +62,37 @@ async function signup(req, res){
     res.json({ success: true, message: "User verified & stored successfully!" });
 }
 
+async function forgotPassword(req, res){
+  const { email } = req.body;
+
+  if (!email) return res.status(400).json({ error: 'Email required' });
+
+  // check if email exists in database
+  const userRecord = await admin.auth().getUserByEmail(email);
+  if (!userRecord.email) return res.status(404).json({ error: 'User not found' });
+  console.log(userRecord.email);
+
+  try {
+    const link = await admin.auth().generatePasswordResetLink(email);
+
+    const html = `<p>Click the link below to reset your password:</p>
+                  <a href="${link}">Reset Password</a>`;
+
+    await sendEmail(email, 'Reset your password', html);
+    res.status(200).json({ message: 'Password reset email sent' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+
+}
+
+
 async function logout(req, res){
     res.clearCookie("session");
     res.json({ success: true, message: "Logged out" });
 }
 
 
-export {login, signup, logout};
+
+
+export {login, signup, logout, forgotPassword};
