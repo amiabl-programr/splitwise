@@ -30,7 +30,7 @@
     "clsx": "^2.1.1",
     "firebase": "^11.6.0",
     "framer-motion": "^12.6.2",
-    "lucide-react": "^0.484.0",
+    "lucide-react": "^0.488.0",
     "postcss": "^8.5.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
