@@ -13,9 +13,10 @@ export interface LoginCredentials {
 }
 
 export interface RegisterData {
+  username: string
   email: string
   password: string
-  name: string
+  confirmPassword: string
 }
 
 export interface AuthContextType {

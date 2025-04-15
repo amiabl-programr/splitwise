@@ -1,6 +1,8 @@
 import axios, { AxiosInstance, AxiosError, AxiosRequestConfig } from 'axios'
 
-const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+// const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+const baseURL =
+  import.meta.env.VITE_API_URL || 'https://behance-builders-lrx5.onrender.com'
 
 // Create an axios instance with base configuration
 const axiosInstance: AxiosInstance = axios.create({
