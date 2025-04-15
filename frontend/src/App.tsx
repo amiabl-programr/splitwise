@@ -17,9 +17,8 @@ const App: React.FC = () => {
         <Route path="*" element={<NotFound />} />
 
         {/* Protected routes */}
-        <Route element={<ProtectedLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Route>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route element={<ProtectedLayout />}></Route>
 
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<LoginPage />} />
