@@ -146,7 +146,7 @@ const Header: React.FC = () => {
                   Sign In
                 </Button>
                 <Button className="bg-rose-500 hover:bg-rose-600 text-white w-full">
-                  Get Started
+                  <Link to="/signup">Get Started</Link>
                 </Button>
               </motion.div>
             </div>

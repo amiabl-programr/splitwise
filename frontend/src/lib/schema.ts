@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-const passwordValidation = /^(?=.*[a-zA-Z0-9]).{6,}[!@#$%^&*()_+=-{};:<>,./?]+$/
+const passwordValidation = /^(?=.*[^a-zA-Z0-9]).{6,}$/
 
 const userSchema = z.object({
   username: z
@@ -10,7 +10,7 @@ const userSchema = z.object({
   email: z.string().email('Invalid Email Address'),
   password: z.string().regex(passwordValidation, {
     message:
-      'password must contain minimum of 6 characters and a special charcter at the end',
+      'password must contain minimum of 6 characters and a special charcter',
   }),
   confirmPassword: z.string(),
 })

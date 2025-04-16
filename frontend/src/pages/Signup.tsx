@@ -3,12 +3,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import userSchema from '@/lib/schema'
 import { Link, useNavigate } from 'react-router'
 import { Lock, Mail, User } from 'lucide-react'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '@/lib/firebase.ts'
 import signupBg from '../assets/signupBg.png'
-import { useState } from 'react'
-import { ToastContainer, toast } from 'react-toastify'
+import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { useRegister } from '@/hooks/useAuthQuery'
 
 interface FormData {
   username: string
@@ -18,8 +16,8 @@ interface FormData {
 }
 
 const Signup = () => {
-  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const { mutateAsync, isPending } = useRegister()
   const {
     register,
     handleSubmit,
@@ -30,38 +28,13 @@ const Signup = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      setLoading(true)
-      const userDetails = await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password
-      )
-      const user = userDetails.user
-      const response = await fetch(
-        'https://behance-builders-lrx5.onrender.com/api/signup',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: data.email,
-            uid: user.uid,
-            username: data.username,
-          }),
-        }
-      )
-      const result = await response.json()
-      console.log(result)
-      if (result.success) {
-        toast.success(result.message)
-        navigate('/signin')
-      } else {
-        toast.error((result.error as Error).message)
-      }
+      await mutateAsync(data, {
+        onSuccess: (response) => {
+          toast.success(response.message)
+          navigate('/login')
+        },
+      })
     } catch (error) {
-      setLoading(false)
-      console.log('sign-in error', error)
       if (error instanceof Error) {
         toast.error(error.message)
       } else {
@@ -202,9 +175,9 @@ const Signup = () => {
               </div>
               <button
                 type="submit"
-                className={`w-full cursor-pointer bg-[#FF432A] text-[#FFFFFF] shadow-lg backdrop-blur-md font-normal text-base rounded-full !py-2 ${loading ? '!cursor-not-allowed opacity-50' : ''}`}
+                className={`w-full cursor-pointer bg-[#FF432A] text-[#FFFFFF] shadow-lg backdrop-blur-md font-normal text-base rounded-full !py-2 ${isPending ? '!cursor-not-allowed opacity-50' : ''}`}
               >
-                {loading ? 'loading' : 'Register'}
+                {isPending ? 'loading' : 'Register'}
               </button>
               <ToastContainer />
             </form>
