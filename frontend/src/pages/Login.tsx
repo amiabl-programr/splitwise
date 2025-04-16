@@ -3,12 +3,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { useState } from 'react'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
-import { auth, googleProvider } from '@/lib/firebase'
 import { toast } from 'react-toastify'
 import ClipLoader from 'react-spinners/ClipLoader'
+import { useNavigate } from 'react-router'
+import { useLogin } from '@/hooks/useAuthQuery'
 
-type LoginFormData = {
+interface LoginFormData {
   email: string
   password: string
 }
@@ -22,6 +22,8 @@ const formSchema = z.object({
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false)
+  const { mutateAsync } = useLogin()
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -33,56 +35,28 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormData) => {
     setLoading(true)
     try {
-      const { email, password } = data
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      )
-      const user = userCredential.user
-
-      const response = await fetch(
-        'https://behance-builders-lrx5.onrender.com/api/login',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            uid: user.uid,
-          }),
-        }
-      )
-
-      const result = await response.json()
-
-      if (result.success) {
-        toast.success('Login successfully! Redirecting...')
-      } else {
-        toast.error('User not found in database: ' + result.message)
-      }
+      await mutateAsync(data, {
+        onSuccess: (response) => {
+          toast.success(response.message)
+          navigate('/dashboard')
+        },
+      })
+      setLoading(false)
     } catch (error: unknown) {
       if (error instanceof Error) {
-        console.error('Email login failed:', error)
-        toast.error(error.message)
+        console.error('Error during login:', error.message)
+        console.error('Stack trace:', error.stack)
       } else {
-        toast.error('Unexpected error during login')
+        console.error('Unknown error during login:', error)
       }
-    } finally {
+
+      toast.error('Something went wrong during login.')
       setLoading(false)
     }
   }
 
   const handleGoogleSignIn = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider)
-      const user = result.user
-      console.log('Google User:', user)
-      toast.success('Login successfully! Redirecting...')
-    } catch (error) {
-      console.error('Google sign-in error:', error)
-      toast.error('Google sign-in failed. Please try again.')
-    }
+    console.log('waiting...')
   }
 
   const [showPassword, setShowPassword] = useState(false)
