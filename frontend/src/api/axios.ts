@@ -14,42 +14,42 @@ const axiosInstance: AxiosInstance = axios.create({
 })
 
 // original request type with retry flag
-interface RetryConfig extends AxiosRequestConfig {
-  _retry?: boolean
-}
+// interface RetryConfig extends AxiosRequestConfig {
+//   _retry?: boolean
+// }
 
 // interceptor
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  async (error: AxiosError) => {
-    const originalRequest = error.config as RetryConfig
+// axiosInstance.interceptors.response.use(
+//   (response) => response,
+//   async (error: AxiosError) => {
+//     const originalRequest = error.config as RetryConfig
 
-    // If error is 401 and we haven't tried refreshing the session yet
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true
+//     // If error is 401 and we haven't tried refreshing the session yet
+//     if (error.response?.status === 401 && !originalRequest._retry) {
+//       originalRequest._retry = true
 
-      try {
-        await axios.post(
-          `${baseURL}/auth/refresh`,
-          {},
-          {
-            withCredentials: true,
-          }
-        )
+//       try {
+//         await axios.post(
+//           `${baseURL}/auth/refresh`,
+//           {},
+//           {
+//             withCredentials: true,
+//           }
+//         )
 
-        // retry the original request
-        if (originalRequest) {
-          return axiosInstance(originalRequest)
-        }
-      } catch (refreshError) {
-        // redirect to login
-        window.location.href = '/login'
-        return Promise.reject(refreshError)
-      }
-    }
+//         // retry the original request
+//         if (originalRequest) {
+//           return axiosInstance(originalRequest)
+//         }
+//       } catch (refreshError) {
+//         // redirect to login
+//         window.location.href = '/login'
+//         return Promise.reject(refreshError)
+//       }
+//     }
 
-    return Promise.reject(error)
-  }
-)
+//     return Promise.reject(error)
+//   }
+// )
 
 export default axiosInstance

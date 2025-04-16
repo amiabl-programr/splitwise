@@ -149,7 +149,7 @@ export function CreateExpenseDialog({
               <Label htmlFor="paidBy">Paid by</Label>
               <Select
                 value={paidBy}
-                onValueChange={(value) => {
+                onValueChange={(value: string) => {
                   setPaidBy(value)
                   setErrors({ ...errors, paidBy: '' })
                 }}
