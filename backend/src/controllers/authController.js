@@ -75,7 +75,7 @@ async function login(req, res) {
       }
     );
     const data = await response.json();
-    if (data.error) return res.status(401).json({ error: data.error.message });
+    if (data.error) return res.status(401).json({ success: false, message: data.error.message });
 
     const decoded = await admin.auth().verifyIdToken(data.idToken);
     const sessionCookie = await admin.auth().createSessionCookie(data.idToken, { expiresIn: 60 * 60 * 24 * 5 * 1000 });
@@ -87,10 +87,13 @@ async function login(req, res) {
       sameSite: "Strict"
     });
 
-    res.status(200).json({ uid: decoded.uid, email: decoded.email });
+    res.status(200).json({ success: true, user: {
+      uid: decoded.uid, 
+      email: decoded.email
+    }});
   } catch (err) {
     console.error("Login error:", err);
-    res.status(500).json({ error: 'Login failed' });
+    res.status(500).json({ success: false, message: 'Login failed' });
   }
 }
 
@@ -124,7 +127,7 @@ async function signup(req, res){
   const data = await response.json();
 
   if (data.error) {
-    return res.status(400).json({ error: data.error.message });
+    return res.status(400).json({ success: false, message: data.error.message });
   }
 
 
@@ -137,9 +140,42 @@ async function signup(req, res){
   });
 
 
-  res.json({ success: true, uid: data.localId, email });
+  res.json({ success: true, 
+    user: {
+      uid: data.localId, 
+      email: data.email
+  }  });
 }
 
+async function getUser(req,res) {
+  try {
+    const uid = req.user.uid;
+
+    // Get Firebase Auth data
+    const userRecord = await admin.auth().getUser(uid);
+
+    // Get Firestore user data
+    const userDoc = await admin.firestore().collection('users').doc(uid).get();
+
+    if (!userDoc.exists) {
+      return res.status(404).json({ error: 'User profile not found in Firestore' });
+    }
+
+    const userData = userDoc.data();
+
+    res.status(200).json({ success: true, user: {
+
+      uid: userRecord.uid,
+      email: userRecord.email,
+      username: userData.username || '',
+      createdAt: userData.createdAt || '',
+    }
+    });
+  } catch (err) {
+    console.error('Error fetching user data:', err);
+    res.status(500).json({ success : false, message: 'Failed to fetch user info' });
+  }
+}
 
 async function forgotPassword(req, res){
   const { email } = req.body;
@@ -174,4 +210,4 @@ async function logout(req, res){
 
 
 
-export {login, signup, logout, forgotPassword};
+export {login, signup, logout, forgotPassword, getUser};
