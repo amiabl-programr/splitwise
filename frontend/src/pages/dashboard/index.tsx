@@ -1,5 +1,5 @@
-const Dashboard = () => {
-  return <div>index</div>
-}
+import Dashboard from '@/components/dashboard'
 
-export default Dashboard
+export default function Home() {
+  return <Dashboard />
+}
