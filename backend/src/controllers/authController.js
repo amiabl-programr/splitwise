@@ -164,7 +164,6 @@ async function getUser(req,res) {
     const userData = userDoc.data();
 
     res.status(200).json({ success: true, user: {
-
       uid: userRecord.uid,
       email: userRecord.email,
       username: userData.username || '',

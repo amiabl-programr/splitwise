@@ -18,13 +18,13 @@ async function createGroups(req, res) {
     };
     const groupDoc = await groupDatabaseReference.add(groupData);
     const createdGroup = await groupDoc.get();
-    res.status(201).json({ groupId: groupDoc.id, group: createdGroup.data() });
+    res.status(201).json({ success: true, groupId: groupDoc.id, group: createdGroup.data() });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 }
 
-async function getAllGroups(req, res) {
+async function getAllGroupsTest(req, res) {
     try {
         const snapshot = await groupDatabaseReference.get();
     
@@ -43,6 +43,16 @@ async function getAllGroups(req, res) {
         res.status(500).json({ message: "Failed to fetch groups" });
       }
 
+}
+
+async function getAllUserGroups(req, res) {
+  try {
+    const snapshot = await groupDatabaseReference.where('members', 'array-contains', req.user.uid).get();
+    const groups = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    res.status(200).json({success: true, groups});
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 }
 
 async function deleteGroup(req, res) {
@@ -67,4 +77,26 @@ async function deleteGroup(req, res) {
   }
 }
 
-export  { createGroups, getAllGroups, deleteGroup};
+async function inviteUser(req, res){
+  const { groupId } = req.params;
+  const { email } = req.body;
+
+  if (!email || typeof email !== 'string') {
+    return res.status(400).json({ success: false, message: 'Invalid input format' });
+  }
+  
+  const isEmail = email.includes('@');
+  
+  try {
+    // Lookup user by email or username
+    const userQuery = await admin.auth().getUserByEmail(email)
+    const userId = userQuery.uid;
+    const groupDoc = groupDatabaseReference.doc(groupId);
+    await groupDoc.update({ members: admin.firestore.FieldValue.arrayUnion(userId) });
+    res.status(200).json({ success: true, message: 'User invited' });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+}
+
+export  { createGroups, getAllGroupsTest, getAllUserGroups, deleteGroup, inviteUser};
