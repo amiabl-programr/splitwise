@@ -1,3 +1,5 @@
+// group routes
+
 import admin from "../config/firebase.js"
 
 const db = admin.firestore();
@@ -62,18 +64,18 @@ async function deleteGroup(req, res) {
   try {
     const groupDoc = await groupDatabaseReference.doc(groupId).get();
     if (!groupDoc.exists) {
-      return res.status(404).json({ message: "No groups found" });
+      return res.status(404).json({ success: false, message: "No groups found" });
     }
 
     const groupData = groupDoc.data();
     if (groupData.ownerId !== userId) {
-      return res.status(403).json({ message: "Only the owner can delete this group" });
+      return res.status(403).json({ success: false, message: "Only the owner can delete this group" });
     }
 
     await groupDatabaseReference.doc(groupId).delete();
-    res.status(200).json({ message: "Group deleted successfully" });
+    res.status(200).json({ success: true, message: "Group deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Failed to delete group" });
+    res.status(500).json({ success: false, message: "Failed to delete group" });
   }
 }
 

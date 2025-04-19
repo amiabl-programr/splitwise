@@ -1,3 +1,4 @@
+// authentication routes
 import admin from "../config/firebase.js";
 import { sendEmail } from "../config/mailservice.js";
 
@@ -183,7 +184,7 @@ async function forgotPassword(req, res){
 
   // check if email exists in database
   const userRecord = await admin.auth().getUserByEmail(email);
-  if (!userRecord.email) return res.status(404).json({ error: 'User not found' });
+  if (!userRecord.email) return res.status(404).json({ success: false, error: 'User not found' });
   console.log(userRecord.email);
 
   try {
@@ -193,9 +194,9 @@ async function forgotPassword(req, res){
                   <a href="${link}">Reset Password</a>`;
 
     await sendEmail(email, 'Reset your password', html);
-    res.status(200).json({ message: 'Password reset email sent' });
+    res.status(200).json({ success: true, message: 'Password reset email sent' });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ success: false,  error: err.message });
   }
 
 }
