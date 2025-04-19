@@ -20,7 +20,7 @@ router.post("/groups/:groupId/invite", verifySessionToken, inviteUser);
 router.post("/create-group", verifySessionToken, createGroups);
 router.delete("/groups/:groupId", verifySessionToken, deleteGroup);
 // gets all groups just for testing
-router.get("/groups-testing", verifySessionToken, getAllGroupsTest);
+// router.get("/groups-testing", verifySessionToken, getAllGroupsTest);
 router.get("/groups", verifySessionToken, getAllUserGroups);
 
 // expenses
