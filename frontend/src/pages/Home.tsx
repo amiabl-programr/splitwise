@@ -47,9 +47,9 @@ const Home: React.FC = () => {
             </Button>
             <Button
               variant="outline"
-              className="border-white text-white hover:bg-rose-600 px-8 py-6 rounded-xl text-lg"
+              className="border-white bg-transparent text-white hover:bg-white hover:text-rose-500 px-8 py-6 rounded-xl text-lg"
             >
-              Try Demo
+              <Link to="/dashboard">Try Demo</Link>
             </Button>
           </div>
 

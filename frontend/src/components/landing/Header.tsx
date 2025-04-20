@@ -77,7 +77,7 @@ const Header: React.FC = () => {
               variant="outline"
               className="border-rose-500 text-rose-500 hover:bg-rose-50"
             >
-              Sign In
+              <Link to="/login">Sign In</Link>
             </Button>
           </motion.div>
           <motion.div
@@ -143,7 +143,7 @@ const Header: React.FC = () => {
                   variant="outline"
                   className="border-rose-500 text-rose-500 hover:bg-rose-50 w-full"
                 >
-                  Sign In
+                  <Link to="/login"> Sign In</Link>
                 </Button>
                 <Button className="bg-rose-500 hover:bg-rose-600 text-white w-full">
                   <Link to="/signup">Get Started</Link>
