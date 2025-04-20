@@ -1,4 +1,7 @@
 import React from 'react'
+import dashboard from '/src/assets/landing_page/dashboard.png'
+import expenses from '/src/assets/landing_page/expenses.png'
+import balances from '/src/assets/landing_page/balances.png'
 
 const Preview: React.FC = () => {
   return (
@@ -13,17 +16,17 @@ const Preview: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {[
           {
-            image: '/src/assets/landing_page/dashboard.png?url',
+            image: dashboard,
             title: 'Dashboard Overview',
             description: 'Get a quick summary of all your groups and balances.',
           },
           {
-            image: '/src/assets/landing_page/expenses.png?url',
+            image: expenses,
             title: 'Adding New Expenses',
             description: 'Adding expenses is as simple as a few taps.',
           },
           {
-            image: '/src/assets/landing_page/balances.png?url',
+            image: balances,
             title: 'Settling Up',
             description: 'See who owes what and settle up with ease.',
           },
