@@ -13,24 +13,27 @@ const Preview: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {[
           {
+            image: '/src/assets/landing_page/dashboard.png?url',
             title: 'Dashboard Overview',
             description: 'Get a quick summary of all your groups and balances.',
           },
           {
+            image: '/src/assets/landing_page/expenses.png?url',
             title: 'Adding New Expenses',
             description: 'Adding expenses is as simple as a few taps.',
           },
           {
+            image: '/src/assets/landing_page/balances.png?url',
             title: 'Settling Up',
             description: 'See who owes what and settle up with ease.',
           },
         ].map((screenshot, index) => (
           <div key={index} className="rounded-xl overflow-hidden shadow-lg">
-            <div className="aspect-[9/16] relative bg-gray-100">
+            <div className=" relative bg-gray-100">
               <img
-                src={`/placeholder.svg?height=640&width=360&text=Screenshot+${index + 1}`}
+                src={screenshot.image}
                 alt={screenshot.title}
-                className="object-cover"
+                className="object-cover h-[240px] w-full"
               />
             </div>
             <div className="p-4">
