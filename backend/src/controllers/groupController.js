@@ -101,4 +101,40 @@ async function inviteUser(req, res){
   }
 }
 
-export  { createGroups, getAllGroupsTest, getAllUserGroups, deleteGroup, inviteUser};
+
+async function getAllUserGroupMembers(req, res) {
+  const { groupId } = req.params;
+
+  try {
+    const groupSnap = await groupDatabaseReference.doc(groupId).get();
+    if (!groupSnap.exists) return res.status(404).json({ success: false, error: 'Group not found' });
+
+    const group = groupSnap.data();
+    const memberUIDs = group.members;
+
+    const memberInfoPromises = memberUIDs.map(uid =>
+      admin.firestore().collection("users").doc(uid).get()
+    );
+    const memberDocs = await Promise.all(memberInfoPromises);
+
+    const formattedMembers = memberDocs.map(doc => {
+      const data = doc.data();
+      if (!doc.exists) {
+        console.warn(`User document not found for UID: ${doc.id}`);
+      }
+      
+      return {
+        uid: doc.id,
+        email: data.email,
+        username: data.username
+      };
+    });
+
+    res.json({ success: true, members: formattedMembers });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+}
+
+
+export  { createGroups, getAllGroupsTest, getAllUserGroups, deleteGroup,inviteUser, getAllUserGroupMembers};

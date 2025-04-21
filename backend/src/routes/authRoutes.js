@@ -1,6 +1,6 @@
 import express from 'express';
 import {login, signup, logout, forgotPassword, getUser}  from '../controllers/authController.js';
-import { createGroups, getAllUserGroups, getAllGroupsTest, deleteGroup, inviteUser} from '../controllers/groupController.js';
+import { createGroups, getAllUserGroups, getAllGroupsTest, deleteGroup, inviteUser, getAllUserGroupMembers} from '../controllers/groupController.js';
 import { createExpense, deleteExpense } from '../controllers/expenseController.js';
 // import verifyAuthToken from '../middleware/verifyAuthToken.js';
 import verifySessionToken from "../middleware/verifySessionToken.js";
@@ -22,6 +22,7 @@ router.delete("/groups/:groupId", verifySessionToken, deleteGroup);
 // gets all groups just for testing
 // router.get("/groups-testing", verifySessionToken, getAllGroupsTest);
 router.get("/groups", verifySessionToken, getAllUserGroups);
+router.get("/groups/:groupId/members", verifySessionToken, getAllUserGroupMembers);
 
 // expenses
 router.post("/:groupId/create-expense", verifySessionToken, createExpense);
