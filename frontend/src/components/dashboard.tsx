@@ -549,6 +549,8 @@ export default function Dashboard() {
         open={isCreateGroupOpen}
         onOpenChange={setIsCreateGroupOpen}
         onSubmit={handleCreateGroup}
+        title={''}
+        description={''}
       />
 
       {selectedGroup && (
