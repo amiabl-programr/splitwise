@@ -34,14 +34,25 @@ export default function Dashboard() {
     calculateBalances,
   } = useGroups()
 
-  const { dialogs, dialogStates, openDialog } = useGroupDialogs(selectedGroup, {
-    onCreateGroup: handleCreateGroup,
-    onEditGroup: handleEditGroup,
-    onDeleteGroup: handleDeleteGroup,
-    onInviteMember: handleInviteMember,
-    onCreateExpense: handleCreateExpense,
-    onDeleteExpense: handleDeleteExpense,
-  })
+  const { dialogs, dialogStates, openDialog } = useGroupDialogs(
+    selectedGroup,
+    {
+      onCreateGroup: handleCreateGroup,
+      onEditGroup: handleEditGroup,
+      onDeleteGroup: handleDeleteGroup,
+      onInviteMember: handleInviteMember,
+      onCreateExpense: handleCreateExpense,
+      onDeleteExpense: handleDeleteExpense,
+    },
+    {
+      creatingGroup: loadingStates.creatingGroup,
+      updatingGroup: loadingStates.updatingGroup,
+      deletingGroup: loadingStates.deletingGroup,
+      invitingMember: loadingStates.invitingMember,
+      creatingExpense: loadingStates.creatingExpense,
+      deletingExpense: loadingStates.deletingExpense,
+    }
+  )
 
   // Initialize selected group when groups are loaded
   useEffect(() => {

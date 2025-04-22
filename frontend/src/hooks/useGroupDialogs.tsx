@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { CreateGroupDialog } from '@/components/create-group-dialog'
 import { CreateExpenseDialog } from '@/components/create-expense-dialog'
 import { InviteDialog } from '@/components/invite-dialog'
-import { EditGroupDialog } from '@/components/edit-group-dialog'
+// import { EditGroupDialog } from '@/components/edit-group-dialog'
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { Group, Expense, Member } from '@/types/type'
+import { Group, Expense } from '@/types/type'
 
 type DialogName =
   | 'createGroup'
@@ -21,7 +21,7 @@ type DialogHandlers = {
   }) => Promise<boolean>
   onEditGroup: (updatedGroup: Partial<Group>) => boolean
   onDeleteGroup: () => Promise<boolean>
-  onInviteMember: (newMember: Omit<Member, 'id'>) => boolean
+  onInviteMember: (newMember: { email: string }) => Promise<boolean>
   onCreateExpense: (data: {
     description: string
     amount: number
@@ -31,7 +31,15 @@ type DialogHandlers = {
 
 export function useGroupDialogs(
   selectedGroup: Group | null,
-  handlers: DialogHandlers
+  handlers: DialogHandlers,
+  loadingStates: {
+    creatingGroup: boolean
+    updatingGroup: boolean
+    deletingGroup: boolean
+    invitingMember: boolean
+    creatingExpense: boolean
+    deletingExpense: boolean
+  }
 ) {
   // Dialog open states
   const [openDialogs, setOpenDialogs] = useState<Record<DialogName, boolean>>({
@@ -65,6 +73,7 @@ export function useGroupDialogs(
         open={openDialogs.createGroup}
         onOpenChange={(open) => setDialogOpen('createGroup', open)}
         onSubmit={handlers.onCreateGroup}
+        isLoading={loadingStates.creatingGroup}
       />
 
       {selectedGroup && (
@@ -73,20 +82,23 @@ export function useGroupDialogs(
             open={openDialogs.createExpense}
             onOpenChange={(open) => setDialogOpen('createExpense', open)}
             onSubmit={handlers.onCreateExpense}
+            isLoading={loadingStates.creatingExpense}
           />
 
           <InviteDialog
             open={openDialogs.invite}
             onOpenChange={(open) => setDialogOpen('invite', open)}
             onSubmit={handlers.onInviteMember}
+            isLoading={loadingStates.invitingMember}
           />
 
-          <EditGroupDialog
+          {/* <EditGroupDialog
             open={openDialogs.editGroup}
             onOpenChange={(open) => setDialogOpen('editGroup', open)}
             group={selectedGroup}
             onSubmit={handlers.onEditGroup}
-          />
+            isLoading={loadingStates.updatingGroup}
+          /> */}
 
           <ConfirmDialog
             open={openDialogs.deleteGroup}
@@ -94,6 +106,7 @@ export function useGroupDialogs(
             title="Delete Group"
             description={`Are you sure you want to delete "${selectedGroup.name}"? This action cannot be undone.`}
             onConfirm={handlers.onDeleteGroup}
+            isLoading={loadingStates.deletingGroup}
           />
 
           <ConfirmDialog
@@ -104,6 +117,7 @@ export function useGroupDialogs(
             onConfirm={() =>
               expenseToDelete && handlers.onDeleteExpense(expenseToDelete.id)
             }
+            isLoading={loadingStates.deletingExpense}
           />
         </>
       )}

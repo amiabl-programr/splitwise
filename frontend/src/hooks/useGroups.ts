@@ -1,12 +1,13 @@
 // hooks/useGroups.ts
 import { useState, useEffect } from 'react'
-import { Group, Member, Expense, Balance } from '@/types/type'
+import { Group, Expense, Balance } from '@/types/type'
 import {
   useCreateGroup,
   useGetGroups,
   useDeleteGroup,
   useCreateExpense,
   useDeleteExpense,
+  useInviteUser,
 } from '@/hooks/useApi'
 
 export function useGroups() {
@@ -19,6 +20,7 @@ export function useGroups() {
     creatingExpense: false,
     deletingExpense: false,
     updatingGroup: false,
+    invitingMember: false,
   })
 
   const createGroupApi = useCreateGroup()
@@ -26,6 +28,7 @@ export function useGroups() {
   const deleteGroupApi = useDeleteGroup()
   const createExpenseApi = useCreateExpense()
   const deleteExpenseApi = useDeleteExpense()
+  const inviteUserApi = useInviteUser()
 
   // Fetch groups on mount
   useEffect(() => {
@@ -156,23 +159,18 @@ export function useGroups() {
     }
   }
 
-  const handleInviteMember = (newMember: Omit<Member, 'id'>) => {
+  const handleInviteMember = async (newMember: { email: string }) => {
     if (!selectedGroup) return false
 
-    setLoadingStates((prev) => ({ ...prev, updatingGroup: true }))
+    setLoadingStates((prev) => ({ ...prev, invitingMember: true }))
     try {
-      const member = {
-        ...newMember,
-        id: Math.random().toString(36).substring(7),
-      }
-
-      updateGroupWithNewMember(selectedGroup.id, member)
+      await inviteUserApi.execute(selectedGroup.id, newMember.email)
       return true
     } catch (error) {
       console.error('Failed to invite member:', error)
       return false
     } finally {
-      setLoadingStates((prev) => ({ ...prev, updatingGroup: false }))
+      setLoadingStates((prev) => ({ ...prev, invitingMember: false }))
     }
   }
 
@@ -263,20 +261,20 @@ export function useGroups() {
     setSelectedGroup(updatedGroups.find((g) => g.id === groupId) || null)
   }
 
-  const updateGroupWithNewMember = (groupId: string, member: Member) => {
-    const updatedGroups = groups.map((group) => {
-      if (group.id === groupId) {
-        return {
-          ...group,
-          members: [...group.members, member],
-        }
-      }
-      return group
-    })
+  //   const updateGroupWithNewMember = (groupId: string, member: { email: string }) => {
+  //     const updatedGroups = groups.map((group) => {
+  //       if (group.id === groupId) {
+  //         return {
+  //           ...group,
+  //           members: [...group.members, member],
+  //         }
+  //       }
+  //       return group
+  //     })
 
-    setGroups(updatedGroups)
-    setSelectedGroup(updatedGroups.find((g) => g.id === groupId) || null)
-  }
+  //     setGroups(updatedGroups)
+  //     setSelectedGroup(updatedGroups.find((g) => g.id === groupId) || null)
+  //   }
 
   return {
     groups,

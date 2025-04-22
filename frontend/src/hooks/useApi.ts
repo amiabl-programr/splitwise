@@ -61,6 +61,14 @@ export function useDeleteGroup() {
   )
 }
 
+export function useInviteUser() {
+  return useApi((groupId: string, email: string) =>
+    import('@/api/group-api').then((module) =>
+      module.groupApi.inviteUser(groupId, email)
+    )
+  )
+}
+
 export function useCreateExpense() {
   return useApi((groupId: string, description: string, amount: number) =>
     import('@/api/group-api').then((module) =>

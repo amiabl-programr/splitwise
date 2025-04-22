@@ -52,6 +52,22 @@ export const groupApi = {
       throw error
     }
   },
+
+  // Invite a user to a group
+  inviteUser: async (groupId: string, email: string) => {
+    try {
+      const response = await axiosInstance.post(
+        `/api/groups/${groupId}/invite`,
+        {
+          email,
+        }
+      )
+      return response.data
+    } catch (error) {
+      console.error(`Error inviting user ${email} to group ${groupId}:`, error)
+      throw error
+    }
+  },
 }
 
 // Expense API functions

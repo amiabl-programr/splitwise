@@ -12,6 +12,8 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Loader2 } from 'lucide-react'
+import { toast } from 'react-toastify'
 
 interface Member {
   id: string
@@ -37,7 +39,8 @@ interface EditGroupDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   group: Group
-  onSubmit: (data: { name: string }) => void
+  onSubmit: (data: { name: string }) => Promise<boolean>
+  isLoading?: boolean
 }
 
 export function EditGroupDialog({
@@ -45,6 +48,7 @@ export function EditGroupDialog({
   onOpenChange,
   group,
   onSubmit,
+  isLoading = false,
 }: EditGroupDialogProps) {
   const [name, setName] = useState('')
   const [error, setError] = useState('')
@@ -56,7 +60,7 @@ export function EditGroupDialog({
     }
   }, [open, group])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!name.trim()) {
@@ -64,7 +68,16 @@ export function EditGroupDialog({
       return
     }
 
-    onSubmit({ name })
+    const success = await onSubmit({
+      name,
+    })
+    if (success) {
+      // Reset form on successful submission
+      toast.success('Group updated successfully')
+      setName('')
+      setError('')
+      onOpenChange(false)
+    }
   }
 
   return (
@@ -88,12 +101,21 @@ export function EditGroupDialog({
                   setName(e.target.value)
                   setError('')
                 }}
+                disabled={isLoading}
               />
               {error && <p className="text-sm text-destructive">{error}</p>}
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Save changes</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...
+                </>
+              ) : (
+                'Save changes'
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -12,23 +12,27 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Loader2 } from 'lucide-react'
+import { toast } from 'react-toastify'
 
 interface CreateExpenseDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSubmit: (data: { description: string; amount: number }) => void
+  onSubmit: (data: { description: string; amount: number }) => Promise<boolean>
+  isLoading?: boolean
 }
 
 export function CreateExpenseDialog({
   open,
   onOpenChange,
   onSubmit,
+  isLoading = false,
 }: CreateExpenseDialogProps) {
   const [description, setDescription] = useState('')
   const [amount, setAmount] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     const newErrors: Record<string, string> = {}
@@ -51,15 +55,19 @@ export function CreateExpenseDialog({
       return
     }
 
-    onSubmit({
+    const success = await onSubmit({
       description,
       amount: Number.parseFloat(amount),
     })
 
-    // Reset form
-    setDescription('')
-    setAmount('')
-    setErrors({})
+    if (success) {
+      toast.success('Expense added successfully!')
+      // Reset form on successful submission
+      setDescription('')
+      setAmount('')
+      setErrors({})
+      onOpenChange(false)
+    }
   }
 
   return (
@@ -83,6 +91,7 @@ export function CreateExpenseDialog({
                   setDescription(e.target.value)
                   setErrors({ ...errors, description: '' })
                 }}
+                disabled={isLoading}
               />
               {errors.description && (
                 <p className="text-sm text-destructive">{errors.description}</p>
@@ -102,6 +111,7 @@ export function CreateExpenseDialog({
                   setAmount(e.target.value)
                   setErrors({ ...errors, amount: '' })
                 }}
+                disabled={isLoading}
               />
               {errors.amount && (
                 <p className="text-sm text-destructive">{errors.amount}</p>
@@ -109,7 +119,17 @@ export function CreateExpenseDialog({
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Add expense</Button>
+            <Button type="submit" disabled={isLoading}>
+              {' '}
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Adding...
+                </>
+              ) : (
+                'Add expense'
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
