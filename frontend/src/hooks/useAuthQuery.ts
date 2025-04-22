@@ -28,6 +28,7 @@ export const useLogin = (): UseMutationResult<
     },
     onSuccess: (data) => {
       login(data.user)
+      console.log('Login successful:', data)
     },
   })
 }
@@ -58,8 +59,6 @@ export const useLogout = (): UseMutationResult<
 }
 
 export const useCurrentUser = (): UseQueryResult<User, AxiosError> => {
-  // const { updateUser } = useAuth();
-
   return useQuery({
     queryKey: ['currentUser'],
     queryFn: authApi.getCurrentUser,

@@ -1,14 +1,13 @@
 import React, {
   createContext,
   useContext,
-  useEffect,
   useMemo,
-  useState,
   ReactNode,
   useCallback,
 } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
+import { useQueryClient } from '@tanstack/react-query'
+import { useCurrentUser } from '../hooks/useAuthQuery'
 import { authApi } from '../api/auth'
 import { User, AuthContextType } from '../types/auth'
 
@@ -19,37 +18,15 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null)
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
-  const [isLoading, setIsLoading] = useState<boolean>(true)
-  const queryClient = useQueryClient()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
-  useEffect(() => {
-    // Check if user is authenticated on initial load
-    const checkAuthState = async (): Promise<void> => {
-      try {
-        // Try to get current user data from the server
-        const userData = await authApi.getCurrentUser()
-        setUser(userData)
-        setIsAuthenticated(true)
-        queryClient.setQueryData(['currentUser'], userData)
-      } catch (error) {
-        console.log('Not authenticated', error)
-        setIsAuthenticated(false)
-        setUser(null)
-      } finally {
-        setIsLoading(false)
-      }
-    }
+  const { data: user, isLoading, isError } = useCurrentUser()
 
-    checkAuthState()
-  }, [queryClient])
+  const isAuthenticated = !!user && !isError
 
   const login = useCallback(
     (userData: User): void => {
-      setUser(userData)
-      setIsAuthenticated(true)
       queryClient.setQueryData(['currentUser'], userData)
     },
     [queryClient]
@@ -57,7 +34,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const updateUser = useCallback(
     (userData: User): void => {
-      setUser(userData)
       queryClient.setQueryData(['currentUser'], userData)
     },
     [queryClient]
@@ -69,8 +45,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } catch (error) {
       console.error('Logout API call failed:', error)
     } finally {
-      setUser(null)
-      setIsAuthenticated(false)
       queryClient.clear()
       navigate('/login')
     }
@@ -78,7 +52,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const value = useMemo<AuthContextType>(
     () => ({
-      user,
+      user: user || null,
       isAuthenticated,
       isLoading,
       login,
