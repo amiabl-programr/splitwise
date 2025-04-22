@@ -20,10 +20,9 @@ interface CreateGroupDialogProps {
   onOpenChange: (open: boolean) => void
   onSubmit: (data: {
     name: string
+    description?: string
     members: { name: string; email: string; avatarUrl: string }[]
   }) => void
-  title: string
-  description: string
 }
 
 export function CreateGroupDialog({
@@ -43,6 +42,7 @@ export function CreateGroupDialog({
     }
     onSubmit({
       name,
+      description,
       members: [
         {
           name: 'You',
@@ -59,13 +59,13 @@ export function CreateGroupDialog({
           'Content-Type': 'application/json',
         },
         // credentials: 'include', // include cookies like session token
-        body: JSON.stringify({ title: name, description }),
+        body: JSON.stringify({ name, description }),
       })
 
       const data: CreateGroupDialogProps | { error: string } = await res.json()
 
       if (res.ok) {
-        const groupData = data as CreateGroupDialogProps
+        const groupData = (data as CreateGroupDialogProps).onSubmit
         console.log(groupData)
       } else {
         setError(`Error: ${(data as { error: string }).error}`)
