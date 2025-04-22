@@ -1,10 +1,11 @@
 import React from 'react'
 import { Button } from '../ui/button'
 import { Link } from 'react-router'
+import dashboard from '/src/assets/landing_page/dashboard.png'
 
 const Hero: React.FC = () => {
   return (
-    <section className="container mx-auto px-4 py-16 md:py-24 flex flex-col lg:flex-row gap-6 items-center">
+    <section className="container mx-auto px-4 lg:px-16 pb-16 pt-24 md:pt-32 flex flex-col lg:flex-row gap-6 items-center">
       <div className="md:w-1/2 mb-10 md:mb-0">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
           Simplify group expenses. Settle up in seconds.
@@ -28,7 +29,7 @@ const Hero: React.FC = () => {
       <div className="md:w-1/2 flex justify-center">
         <div className="relative shadow-2xl overflow-hidden ">
           <img
-            src="/src/assets/landing_page/dashboard.png?url"
+            src={dashboard}
             alt="Split-The-Cost App"
             className="object-cover"
           />

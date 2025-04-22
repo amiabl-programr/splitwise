@@ -5,7 +5,6 @@ export default async function verifyAuthToken(req,res, next){
     if (!idToken) {
         return res.status(400).json({ error: "Missing ID token in request body" });
     }
-    console.log("idtoken", idToken);
     
         try {
             const decodedToken = await admin.auth().verifyIdToken(idToken);

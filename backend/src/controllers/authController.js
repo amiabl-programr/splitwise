@@ -83,9 +83,9 @@ async function login(req, res) {
 
     res.cookie('session', sessionCookie, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: true,
       maxAge: 60 * 60 * 24 * 5 * 1000,
-      sameSite: "Strict"
+      sameSite: "None"
     });
 
     res.status(200).json({ success: true, user: {
