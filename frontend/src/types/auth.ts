@@ -31,3 +31,8 @@ export interface AuthResponse {
   user: User
   message?: string
 }
+
+export interface UserResponse {
+  user: User
+  success: boolean
+}
