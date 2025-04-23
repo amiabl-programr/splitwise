@@ -4,13 +4,6 @@ export interface User {
   username: string
   createdAt: string
   updatedAt: string
-  user?: {
-    id: string
-    email: string
-    username: string
-    createdAt: string
-    updatedAt: string
-  }
 }
 
 export interface LoginCredentials {
