@@ -14,26 +14,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'react-toastify'
-
-interface Member {
-  id: string
-  name: string
-  // Add other member properties as needed
-}
-
-interface Expense {
-  id: string
-  amount: number
-  description: string
-  // Add other expense properties as needed
-}
-
-interface Group {
-  id: string
-  name: string
-  members: Member[]
-  expenses: Expense[]
-}
+import { Group } from '@/types/type'
 
 interface EditGroupDialogProps {
   open: boolean

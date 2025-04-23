@@ -8,7 +8,7 @@ import {
   CardContent,
   CardFooter,
 } from '@/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Balance } from '@/types/type'
 import { BalanceItemSkeleton } from './skeleton-loaders'
 import { Loader2 } from 'lucide-react'
@@ -51,18 +51,16 @@ export default function BalancesPanel({
               ) : (
                 balances.map(({ member, balance }) => (
                   <div
-                    key={member.id}
+                    key={member.uid}
                     className="flex items-center justify-between"
                   >
                     <div className="flex items-center gap-2">
                       <Avatar className="h-8 w-8">
-                        <AvatarImage
-                          src={member.avatarUrl || '/placeholder.svg'}
-                          alt={member.name}
-                        />
-                        <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
+                        <AvatarFallback>
+                          {member.username.charAt(0)}
+                        </AvatarFallback>
                       </Avatar>
-                      <span>{member.name}</span>
+                      <span>{member.username}</span>
                     </div>
                     <span
                       className={

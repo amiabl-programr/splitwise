@@ -1,22 +1,24 @@
 // types.ts
 export interface Member {
-  id: string
-  name: string
+  uid: string
+  username: string
   email: string
-  avatarUrl: string
 }
 
 export interface Expense {
   id: string
   description: string
+  groupId: string
   amount: number
-  paidBy: string
-  date: string
+  payerId: string
+  splits: Record<string, { amount: number; email: string; username: string }>
 }
 
 export interface Group {
   id: string
   name: string
+  description: string
+  ownerId: string
   members: Member[]
   expenses: Expense[]
 }

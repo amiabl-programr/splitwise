@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Member } from '@/types/type'
 import { Loader2 } from 'lucide-react'
 
@@ -27,17 +27,13 @@ export default function MembersPanel({
           ) : (
             <div className="space-y-3">
               {members.map((member) => (
-                <div key={member.id} className="flex items-center gap-3">
+                <div key={member.uid} className="flex items-center gap-3">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage
-                      src={member.avatarUrl || '/placeholder.svg'}
-                      alt={member.name}
-                    />
-                    <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
+                    <AvatarFallback>{member.username.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">
-                      {member.name}
+                      {member.username}
                     </p>
                     <p className="text-xs text-muted-foreground truncate">
                       {member.email}

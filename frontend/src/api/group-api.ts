@@ -2,19 +2,6 @@ import axiosInstance from './axios'
 import type { AxiosError } from 'axios'
 import type { ErrorResponse, FormattedError, ErrorType } from '../types/api'
 
-// Types
-export interface Group {
-  id: string
-  title: string
-  description: string
-}
-
-export interface Expense {
-  id: string
-  description: string
-  amount: number
-}
-
 // Group API functions
 export const groupApi = {
   // Create a new group
@@ -49,6 +36,30 @@ export const groupApi = {
       return response.data
     } catch (error) {
       console.error(`Error deleting group ${groupId}:`, error)
+      throw error
+    }
+  },
+
+  // Update a group's title
+  updateGroup: async (groupId: string, title: string) => {
+    try {
+      const response = await axiosInstance.patch(`/api/groups/${groupId}`, {
+        title,
+      })
+      return response.data
+    } catch (error) {
+      console.error(`Error updating group ${groupId}:`, error)
+      throw error
+    }
+  },
+
+  // Get all members of a group
+  getGroupMembers: async (groupId: string) => {
+    try {
+      const response = await axiosInstance.get(`/api/groups/${groupId}/members`)
+      return response.data.members
+    } catch (error) {
+      console.error(`Error fetching members for group ${groupId}:`, error)
       throw error
     }
   },
@@ -89,6 +100,35 @@ export const expenseApi = {
       return response.data
     } catch (error) {
       console.error('Error creating expense:', error)
+      throw error
+    }
+  },
+
+  // Update an existing expense
+  updateExpense: async (
+    groupId: string,
+    expenseId: string,
+    data: { description?: string; amount?: number }
+  ) => {
+    try {
+      const response = await axiosInstance.patch(
+        `/api/groups/${groupId}/expenses/${expenseId}`,
+        data
+      )
+      return response.data
+    } catch (error) {
+      console.error(`Error updating expense ${expenseId}:`, error)
+      throw error
+    }
+  },
+
+  // Get all expenses for a group
+  getGroupExpenses: async (groupId: string) => {
+    try {
+      const response = await axiosInstance.get(`/api/${groupId}/expenses`)
+      return response.data.expenses
+    } catch (error) {
+      console.error(`Error fetching expenses for group ${groupId}:`, error)
       throw error
     }
   },

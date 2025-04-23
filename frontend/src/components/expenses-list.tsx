@@ -1,12 +1,6 @@
 import { Plus, Receipt, Trash2, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Expense, Member } from '@/types/type'
 import { ExpenseItemSkeleton } from './skeleton-loaders'
@@ -27,8 +21,8 @@ export default function ExpensesList({
   isLoading = false,
 }: ExpensesListProps) {
   const getMemberName = (memberId: string): string => {
-    const member = members.find((m) => m.id === memberId)
-    return member ? member.name : 'Unknown'
+    const member = members.find((m) => m.uid === memberId)
+    return member ? member.username : 'Unknown'
   }
 
   return (
@@ -79,14 +73,13 @@ export default function ExpensesList({
                     )}
                   </Button>
                 </div>
-                <CardDescription>{expense.date}</CardDescription>
               </CardHeader>
               <CardContent className="p-4 pt-0">
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2">
                     <span>Paid by</span>
                     <Badge variant="outline">
-                      {getMemberName(expense.paidBy)}
+                      {getMemberName(expense.payerId)}
                     </Badge>
                   </div>
                   <span className="text-lg font-semibold">

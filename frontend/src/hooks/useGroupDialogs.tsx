@@ -5,6 +5,7 @@ import { InviteDialog } from '@/components/invite-dialog'
 // import { EditGroupDialog } from '@/components/edit-group-dialog'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { Group, Expense } from '@/types/type'
+import { EditGroupDialog } from '@/components/edit-group-dialog'
 
 type DialogName =
   | 'createGroup'
@@ -19,7 +20,7 @@ type DialogHandlers = {
     name: string
     description?: string
   }) => Promise<boolean>
-  onEditGroup: (updatedGroup: Partial<Group>) => boolean
+  onEditGroup: (updatedGroup: { name: string }) => Promise<boolean>
   onDeleteGroup: () => Promise<boolean>
   onInviteMember: (newMember: { email: string }) => Promise<boolean>
   onCreateExpense: (data: {
@@ -92,13 +93,13 @@ export function useGroupDialogs(
             isLoading={loadingStates.invitingMember}
           />
 
-          {/* <EditGroupDialog
+          <EditGroupDialog
             open={openDialogs.editGroup}
             onOpenChange={(open) => setDialogOpen('editGroup', open)}
             group={selectedGroup}
             onSubmit={handlers.onEditGroup}
             isLoading={loadingStates.updatingGroup}
-          /> */}
+          />
 
           <ConfirmDialog
             open={openDialogs.deleteGroup}

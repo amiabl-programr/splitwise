@@ -35,8 +35,6 @@ export default function Sidebar({
   const logoutMutation = useLogout()
   const email = currentUser?.email || currentUser?.user?.email
 
-  console.log('Current User:', currentUser)
-
   const handleLogout = () => {
     logoutMutation.mutate()
   }

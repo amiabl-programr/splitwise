@@ -1,9 +1,10 @@
 import { UserPlus, Edit, Trash2, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Group } from '@/types/type'
+import { Group, Member } from '@/types/type'
 
 interface GroupHeaderProps {
   group: Group
+  members: Member[]
   onInvite: () => void
   onEdit: () => void
   onDelete: () => void
@@ -12,6 +13,7 @@ interface GroupHeaderProps {
 
 export default function GroupHeader({
   group,
+  members,
   onInvite,
   onEdit,
   onDelete,
@@ -21,7 +23,7 @@ export default function GroupHeader({
     <header className="border-b p-4 bg-card flex justify-between items-center">
       <div>
         <h1 className="text-2xl font-bold">{group.name}</h1>
-        <p className="text-muted-foreground">{group.members.length} members</p>
+        <p className="text-muted-foreground">{members.length} members</p>
       </div>
       <div className="flex gap-2">
         <Button
@@ -31,11 +33,11 @@ export default function GroupHeader({
           disabled={isLoading}
         >
           {isLoading ? (
-            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            <Loader2 className="h-4 w-4 md:mr-2 animate-spin" />
           ) : (
-            <UserPlus className="h-4 w-4 mr-2" />
+            <UserPlus className="h-4 w-4 md:mr-2" />
           )}
-          Invite
+          <span className="hidden md:inline">Invite</span>
         </Button>
         <Button
           variant="outline"
@@ -44,11 +46,11 @@ export default function GroupHeader({
           disabled={isLoading}
         >
           {isLoading ? (
-            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            <Loader2 className="h-4 w-4 md:mr-2 animate-spin" />
           ) : (
-            <Edit className="h-4 w-4 mr-2" />
+            <Edit className="h-4 w-4 md:mr-2" />
           )}
-          Edit
+          <span className="hidden md:inline">Edit</span>
         </Button>
         <Button
           variant="destructive"
@@ -57,11 +59,11 @@ export default function GroupHeader({
           disabled={isLoading}
         >
           {isLoading ? (
-            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            <Loader2 className="h-4 w-4 md:mr-2 animate-spin" />
           ) : (
-            <Trash2 className="h-4 w-4 mr-2" />
+            <Trash2 className="h-4 w-4 md:mr-2" />
           )}
-          Delete
+          <span className="hidden md:inline">Delete</span>
         </Button>
       </div>
     </header>

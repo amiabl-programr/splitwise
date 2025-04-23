@@ -28,7 +28,6 @@ export const useLogin = (): UseMutationResult<
     },
     onSuccess: (data) => {
       login(data.user)
-      console.log('Login successful:', data)
     },
   })
 }

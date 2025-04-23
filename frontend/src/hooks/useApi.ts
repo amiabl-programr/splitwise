@@ -61,6 +61,22 @@ export function useDeleteGroup() {
   )
 }
 
+export function useUpdateGroup() {
+  return useApi((groupId: string, title: string) =>
+    import('@/api/group-api').then((module) =>
+      module.groupApi.updateGroup(groupId, title)
+    )
+  )
+}
+
+export function useGetGroupMembers() {
+  return useApi((groupId: string) =>
+    import('@/api/group-api').then((module) =>
+      module.groupApi.getGroupMembers(groupId)
+    )
+  )
+}
+
 export function useInviteUser() {
   return useApi((groupId: string, email: string) =>
     import('@/api/group-api').then((module) =>
@@ -73,6 +89,27 @@ export function useCreateExpense() {
   return useApi((groupId: string, description: string, amount: number) =>
     import('@/api/group-api').then((module) =>
       module.expenseApi.createExpense(groupId, description, amount)
+    )
+  )
+}
+
+export function useUpdateExpense() {
+  return useApi(
+    (
+      groupId: string,
+      expenseId: string,
+      data: { description?: string; amount?: number }
+    ) =>
+      import('@/api/group-api').then((module) =>
+        module.expenseApi.updateExpense(groupId, expenseId, data)
+      )
+  )
+}
+
+export function useGetGroupExpenses() {
+  return useApi((groupId: string) =>
+    import('@/api/group-api').then((module) =>
+      module.expenseApi.getGroupExpenses(groupId)
     )
   )
 }

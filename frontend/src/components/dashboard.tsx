@@ -23,24 +23,27 @@ export default function Dashboard() {
     groups,
     selectedGroup,
     setSelectedGroup,
+    groupMembers,
+    groupExpenses,
     isLoading,
     loadingStates,
     handleCreateGroup,
-    handleEditGroup,
+    handleUpdateGroup,
     handleDeleteGroup,
     handleInviteMember,
     handleCreateExpense,
     handleDeleteExpense,
     calculateBalances,
+    refreshData,
   } = useGroups()
 
   const { dialogs, dialogStates, openDialog } = useGroupDialogs(
     selectedGroup,
     {
       onCreateGroup: handleCreateGroup,
-      onEditGroup: handleEditGroup,
+      onEditGroup: (data) => handleUpdateGroup(data.name),
       onDeleteGroup: handleDeleteGroup,
-      onInviteMember: handleInviteMember,
+      onInviteMember: (data) => handleInviteMember(data.email),
       onCreateExpense: handleCreateExpense,
       onDeleteExpense: handleDeleteExpense,
     },
@@ -60,6 +63,12 @@ export default function Dashboard() {
       setSelectedGroup(groups[0])
     }
   }, [groups, selectedGroup, setSelectedGroup, isLoading])
+
+  // Calculate total expenses amount
+  const totalExpensesAmount = groupExpenses.reduce(
+    (sum, expense) => sum + expense.amount,
+    0
+  )
 
   const renderMainContent = () => {
     if (isLoading) {
@@ -94,6 +103,7 @@ export default function Dashboard() {
         <Suspense fallback={<GroupHeaderSkeleton />}>
           <GroupHeader
             group={selectedGroup}
+            members={groupMembers}
             onInvite={() => openDialog('invite')}
             onEdit={() => openDialog('editGroup')}
             onDelete={() => openDialog('deleteGroup')}
@@ -108,8 +118,8 @@ export default function Dashboard() {
             <div className="lg:col-span-2">
               <Suspense fallback={<ExpensesListSkeleton />}>
                 <ExpensesList
-                  expenses={selectedGroup.expenses}
-                  members={selectedGroup.members}
+                  expenses={groupExpenses}
+                  members={groupMembers}
                   onAddExpense={() => openDialog('createExpense')}
                   onDeleteExpense={(expense) => {
                     dialogStates.setExpenseToDelete(expense)
@@ -117,7 +127,8 @@ export default function Dashboard() {
                   }}
                   isLoading={
                     loadingStates.creatingExpense ||
-                    loadingStates.deletingExpense
+                    loadingStates.deletingExpense ||
+                    loadingStates.fetchingExpenses
                   }
                 />
               </Suspense>
@@ -127,18 +138,23 @@ export default function Dashboard() {
               <Suspense fallback={<BalancesPanelSkeleton />}>
                 <BalancesPanel
                   balances={calculateBalances()}
-                  totalExpenses={selectedGroup.expenses.reduce(
-                    (sum, expense) => sum + expense.amount,
-                    0
-                  )}
-                  isLoading={loadingStates.updatingGroup}
+                  totalExpenses={totalExpensesAmount}
+                  isLoading={
+                    loadingStates.updatingGroup ||
+                    loadingStates.fetchingExpenses ||
+                    loadingStates.fetchingMembers
+                  }
                 />
               </Suspense>
 
               <Suspense fallback={<MembersPanelSkeleton />}>
                 <MembersPanel
-                  members={selectedGroup.members}
-                  isLoading={loadingStates.updatingGroup}
+                  members={groupMembers}
+                  isLoading={
+                    loadingStates.updatingGroup ||
+                    loadingStates.fetchingMembers ||
+                    loadingStates.invitingMember
+                  }
                 />
               </Suspense>
             </div>
@@ -147,6 +163,22 @@ export default function Dashboard() {
       </>
     )
   }
+
+  // Function to refresh group data (members and expenses)
+  const refreshGroupData = () => {
+    if (selectedGroup) {
+      refreshData.fetchGroupMembers(selectedGroup.id)
+      refreshData.fetchGroupExpenses(selectedGroup.id)
+    }
+  }
+
+  // Refresh data when selected group changes
+  useEffect(() => {
+    if (selectedGroup) {
+      refreshGroupData()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedGroup?.id])
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -166,7 +198,9 @@ export default function Dashboard() {
         </Suspense>
       )}
 
-      <div className="flex-1 flex flex-col ">{renderMainContent()}</div>
+      <div className="flex-1 flex flex-col mt-10 md:mt-0">
+        {renderMainContent()}
+      </div>
 
       {dialogs}
     </div>
