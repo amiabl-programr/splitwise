@@ -5,7 +5,7 @@ This README provides a straightforward, example-driven guide to the Expense-Shar
 ---
 
 ### Common Setup
-- **Base URL:** 
+- **Base URL:**
     Localhost: `http://localhost:5001/api`
     Render: `https://behance-builders-lrx5.onrender.com/api`
 - **Headers:**
@@ -135,6 +135,40 @@ This README provides a straightforward, example-driven guide to the Expense-Shar
 - **Parameters:** `:groupId` in URL path.
 - **Success Response (200):** `{ "success": true, "message": "Group deleted successfully" }`
 
+**PATCH `/groups/:groupId`**
+- **Purpose:** Edit the title of a group (only the owner can edit).
+- **Auth:** Requires session cookie.
+- **Body:**
+  ```json
+  { "title": "New Group Title" }
+  ```
+- **Success Response (200):**
+  ```json
+  {
+    "success": true,
+    "message": "Group title updated",
+    "group": {
+      "id": "group123",
+      "title": "New Group Title",
+      "ownerId": "uid123",
+      "members": ["uid123", "uid456"]
+    }
+  }
+  ```
+
+**GET `/groups/:groupId/members`**
+- **Purpose:** Get all members of a group.
+- **Auth:** Requires session cookie.
+- **Success Response (200):**
+  ```json
+  {
+    "members": [
+      { "uid": "uid123", "email": "alice@example.com", "username": "alice" },
+      { "uid": "uid456", "email": "bob@example.com", "username": "bob" }
+    ]
+  }
+  ```
+
 ---
 
 ### Expense Routes
@@ -156,6 +190,66 @@ This README provides a straightforward, example-driven guide to the Expense-Shar
     "success": true,
     "expenseId": "exp456",
     "expense": { /* expense data */ }
+  }
+  ```
+
+**PATCH `/groups/:groupId/expenses/:expenseId`**
+- **Purpose:** Edit an expense’s description or amount (only the group owner).
+- **Auth:** Requires session cookie.
+- **Body:**
+  ```json
+  {
+    "description": "Updated dinner bill",
+    "amount": 3000
+  }
+  ```
+- **Success Response (200):**
+  ```json
+  {
+    "success": true,
+    "message": "Expense updated",
+    "expense": {
+      "id": "exp456",
+      "groupId": "group123",
+      "description": "Updated dinner bill",
+      "amount": 3000,
+      "payerId": "uid123",
+      "splits": { /* split data */ }
+    }
+  }
+  ```
+
+**GET `/groups/:groupId/expenses`**
+- **Purpose:** Get all expenses in a group with enriched user info.
+- **Auth:** Requires session cookie.
+- **Success Response (200):**
+  ```json
+  {
+    "expenses": [
+      {
+        "id": "exp456",
+        "groupId": "group123",
+        "description": "Lunch",
+        "amount": 3000,
+        "splits": {
+          "uid123": {
+            "amount": 1500,
+            "email": "alice@example.com",
+            "username": "alice"
+          },
+          "uid456": {
+            "amount": 1500,
+            "email": "bob@example.com",
+            "username": "bob"
+          }
+        },
+        "payer": {
+          "id": "uid123",
+          "email": "alice@example.com",
+          "username": "alice"
+        }
+      }
+    ]
   }
   ```
 
