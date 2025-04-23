@@ -5,7 +5,7 @@ import { handleApiError } from '@/api/group-api'
 import type { ErrorResponse, FormattedError } from '../types/api'
 import { AxiosError } from 'axios'
 
-// Generic hook for API calls// Generic hook for API calls
+// Generic hook for API calls
 export function useApi<T, P extends unknown[]>(
   apiFunction: (...args: P) => Promise<T>
 ) {
@@ -38,7 +38,6 @@ export function useApi<T, P extends unknown[]>(
   }
 }
 
-// Example usage hooks for specific API calls
 export function useCreateGroup() {
   return useApi((title: string, description: string) =>
     import('@/api/group-api').then((module) =>
