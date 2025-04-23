@@ -1,10 +1,16 @@
 export interface User {
   id: string
   email: string
-  name: string
-  role: string
+  username: string
   createdAt: string
   updatedAt: string
+  user?: {
+    id: string
+    email: string
+    username: string
+    createdAt: string
+    updatedAt: string
+  }
 }
 
 export interface LoginCredentials {

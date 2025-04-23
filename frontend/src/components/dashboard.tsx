@@ -166,7 +166,7 @@ export default function Dashboard() {
         </Suspense>
       )}
 
-      <div className="flex-1 flex flex-col">{renderMainContent()}</div>
+      <div className="flex-1 flex flex-col ">{renderMainContent()}</div>
 
       {dialogs}
     </div>

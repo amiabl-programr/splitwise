@@ -14,7 +14,7 @@ interface ConfirmDialogProps {
   onOpenChange: (open: boolean) => void
   title: string
   description: string
-  onConfirm: () => void
+  onConfirm: () => Promise<boolean>
   isLoading?: boolean
 }
 
@@ -26,6 +26,13 @@ export function ConfirmDialog({
   onConfirm,
   isLoading = false,
 }: ConfirmDialogProps) {
+  const handleConfirm = async () => {
+    const confirm = await onConfirm()
+    if (confirm) {
+      onOpenChange(false)
+    }
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
@@ -39,7 +46,7 @@ export function ConfirmDialog({
           </Button>
           <Button
             variant="destructive"
-            onClick={onConfirm}
+            onClick={handleConfirm}
             disabled={isLoading}
           >
             {isLoading ? (

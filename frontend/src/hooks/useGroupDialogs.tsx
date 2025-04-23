@@ -115,7 +115,9 @@ export function useGroupDialogs(
             title="Delete Expense"
             description={`Are you sure you want to delete "${expenseToDelete?.description}"? This action cannot be undone.`}
             onConfirm={() =>
-              expenseToDelete && handlers.onDeleteExpense(expenseToDelete.id)
+              expenseToDelete
+                ? handlers.onDeleteExpense(expenseToDelete.id)
+                : Promise.resolve(false)
             }
             isLoading={loadingStates.deletingExpense}
           />
