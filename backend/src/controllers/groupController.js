@@ -79,27 +79,41 @@ async function deleteGroup(req, res) {
   }
 }
 
-async function inviteUser(req, res){
+async function inviteUser(req, res) {
   const { groupId } = req.params;
   const { email } = req.body;
 
   if (!email || typeof email !== 'string') {
     return res.status(400).json({ success: false, message: 'Invalid input format' });
   }
-  
-  const isEmail = email.includes('@');
-  
+
   try {
-    // Lookup user by email or username
-    const userQuery = await admin.auth().getUserByEmail(email)
-    const userId = userQuery.uid;
+    // Try to get the user by email
+    const userRecord = await admin.auth().getUserByEmail(email);
+    const userId = userRecord.uid;
+
     const groupDoc = groupDatabaseReference.doc(groupId);
-    await groupDoc.update({ members: admin.firestore.FieldValue.arrayUnion(userId) });
+    const groupSnap = await groupDoc.get();
+
+    if (!groupSnap.exists) {
+      return res.status(404).json({ success: false, message: 'Group not found' });
+    }
+
+    await groupDoc.update({
+      members: admin.firestore.FieldValue.arrayUnion(userId),
+    });
+
     res.status(200).json({ success: true, message: 'User invited' });
   } catch (err) {
-    res.status(400).json({ success: false, message: err.message });
+    if (err.code === 'auth/user-not-found') {
+      return res.status(404).json({ success: false, message: 'User with this email does not exist' });
+    }
+
+    console.error('Invite error:', err);
+    res.status(500).json({ success: false, message: 'Something went wrong' });
   }
 }
+
 
 
 async function getAllUserGroupMembers(req, res) {
@@ -136,5 +150,28 @@ async function getAllUserGroupMembers(req, res) {
   }
 }
 
+async function editGroupTitle(req, res) {
+  const { groupId } = req.params;
+  const { title } = req.body;
 
-export  { createGroups, getAllGroupsTest, getAllUserGroups, deleteGroup,inviteUser, getAllUserGroupMembers};
+  if (!title) {
+    return res.status(400).json({ success: false, error: 'Title is required' });
+  }
+
+  try {
+    const groupRef = db.collection('groups').doc(groupId);
+
+    await groupRef.update({ title });
+
+    const updatedGroupDoc = await groupRef.get();
+    const updatedGroup = updatedGroupDoc.data();
+
+    res.json({ success: true, message: 'Group title updated', group: { id: groupId, ...updatedGroup } });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: 'Failed to update group title' });
+  }
+}
+
+
+export  { createGroups, getAllGroupsTest, getAllUserGroups, deleteGroup,inviteUser, getAllUserGroupMembers, editGroupTitle};
