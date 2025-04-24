@@ -1,8 +1,7 @@
 export interface User {
   id: string
   email: string
-  name: string
-  role: string
+  username: string
   createdAt: string
   updatedAt: string
 }
@@ -31,4 +30,9 @@ export interface AuthContextType {
 export interface AuthResponse {
   user: User
   message?: string
+}
+
+export interface UserResponse {
+  user: User
+  success: boolean
 }

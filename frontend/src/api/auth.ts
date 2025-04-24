@@ -2,8 +2,9 @@ import axiosInstance from './axios'
 import {
   LoginCredentials,
   RegisterData,
-  User,
   AuthResponse,
+  User,
+  UserResponse,
 } from '../types/auth'
 
 export const authApi = {
@@ -31,7 +32,7 @@ export const authApi = {
   },
 
   getCurrentUser: async (): Promise<User> => {
-    const response = await axiosInstance.get<User>('/api/me')
-    return response.data
+    const response = await axiosInstance.get<UserResponse>('/api/me')
+    return response.data.user
   },
 }

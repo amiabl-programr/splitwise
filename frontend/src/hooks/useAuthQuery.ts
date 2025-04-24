@@ -58,8 +58,6 @@ export const useLogout = (): UseMutationResult<
 }
 
 export const useCurrentUser = (): UseQueryResult<User, AxiosError> => {
-  // const { updateUser } = useAuth();
-
   return useQuery({
     queryKey: ['currentUser'],
     queryFn: authApi.getCurrentUser,

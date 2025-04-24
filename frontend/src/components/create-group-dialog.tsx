@@ -1,7 +1,4 @@
-'use client'
-
 import type React from 'react'
-
 import { useState } from 'react'
 import {
   Dialog,
@@ -14,21 +11,21 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Loader2 } from 'lucide-react'
+import { toast } from 'react-toastify'
 
 interface CreateGroupDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSubmit: (data: {
-    name: string
-    description?: string
-    members: { name: string; email: string; avatarUrl: string }[]
-  }) => void
+  onSubmit: (data: { name: string; description?: string }) => Promise<boolean>
+  isLoading?: boolean
 }
 
 export function CreateGroupDialog({
   open,
   onOpenChange,
   onSubmit,
+  isLoading = false,
 }: CreateGroupDialogProps) {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
@@ -40,44 +37,20 @@ export function CreateGroupDialog({
       setError('Group name is required')
       return
     }
-    onSubmit({
+
+    const success = await onSubmit({
       name,
       description,
-      members: [
-        {
-          name: 'You',
-          email: 'you@example.com',
-          avatarUrl: '/placeholder.svg?height=40&width=40',
-        },
-      ],
     })
 
-    try {
-      const res = await fetch('/api/create-group', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // credentials: 'include', // include cookies like session token
-        body: JSON.stringify({ name, description }),
-      })
-
-      const data: CreateGroupDialogProps | { error: string } = await res.json()
-
-      if (res.ok) {
-        const groupData = (data as CreateGroupDialogProps).onSubmit
-        console.log(groupData)
-      } else {
-        setError(`Error: ${(data as { error: string }).error}`)
-      }
-    } catch (err) {
-      console.error('Fetch error:', err)
-      setError('Unexpected error occurred.')
+    if (success) {
+      toast.success('Group created successfully!')
+      // Reset form on successful submission
+      setName('')
+      setDescription('')
+      setError('')
+      onOpenChange(false)
     }
-    // Reset form
-    setName('')
-    setDescription('')
-    setError('')
   }
 
   return (
@@ -101,6 +74,7 @@ export function CreateGroupDialog({
                   setName(e.target.value)
                   setError('')
                 }}
+                disabled={isLoading}
                 required
               />
               {error && <p className="text-sm text-destructive">{error}</p>}
@@ -109,18 +83,26 @@ export function CreateGroupDialog({
               <Label htmlFor="description">Group Description</Label>
               <Input
                 id="description"
-                placeholder="Trip to Paris, Apartment, etc."
+                placeholder="Optional description of your group"
                 value={description}
                 onChange={(e) => {
                   setDescription(e.target.value)
-                  setError('')
                 }}
+                disabled={isLoading}
               />
-              {error && <p className="text-sm text-destructive">{error}</p>}
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Create group</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                'Create group'
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

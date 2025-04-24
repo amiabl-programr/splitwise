@@ -1,5 +1,3 @@
-'use client'
-
 import type React from 'react'
 
 import { useState } from 'react'
@@ -14,30 +12,29 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Loader2 } from 'lucide-react'
+import { toast } from 'react-toastify'
 
 interface InviteDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSubmit: (data: { name: string; email: string; avatarUrl: string }) => void
+  onSubmit: (data: { email: string }) => Promise<boolean>
+  isLoading?: boolean
 }
 
 export function InviteDialog({
   open,
   onOpenChange,
   onSubmit,
+  isLoading = false,
 }: InviteDialogProps) {
-  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     const newErrors: Record<string, string> = {}
-
-    if (!name.trim()) {
-      newErrors.name = 'Name is required'
-    }
 
     if (!email.trim()) {
       newErrors.email = 'Email is required'
@@ -50,16 +47,18 @@ export function InviteDialog({
       return
     }
 
-    onSubmit({
-      name,
+    // Call the onSubmit function with the email
+    const success = await onSubmit({
       email,
-      avatarUrl: '/placeholder.svg?height=40&width=40',
     })
 
-    // Reset form
-    setName('')
-    setEmail('')
-    setErrors({})
+    if (success) {
+      toast.success('Invitation sent successfully!')
+      // Reset form on successful submission
+      setEmail('')
+      setErrors({})
+      onOpenChange(false)
+    }
   }
 
   return (
@@ -74,22 +73,6 @@ export function InviteDialog({
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                placeholder="John Doe"
-                value={name}
-                onChange={(e) => {
-                  setName(e.target.value)
-                  setErrors({ ...errors, name: '' })
-                }}
-              />
-              {errors.name && (
-                <p className="text-sm text-destructive">{errors.name}</p>
-              )}
-            </div>
-
-            <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
@@ -100,6 +83,7 @@ export function InviteDialog({
                   setEmail(e.target.value)
                   setErrors({ ...errors, email: '' })
                 }}
+                disabled={isLoading}
               />
               {errors.email && (
                 <p className="text-sm text-destructive">{errors.email}</p>
@@ -107,7 +91,16 @@ export function InviteDialog({
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Invite member</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Invite...
+                </>
+              ) : (
+                'Invite'
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

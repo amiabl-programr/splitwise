@@ -1,5 +1,3 @@
-'use client'
-
 import type React from 'react'
 
 import { useState } from 'react'
@@ -14,46 +12,27 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-
-interface Member {
-  id: string
-  name: string
-  email: string
-  avatarUrl: string
-}
+import { Loader2 } from 'lucide-react'
+import { toast } from 'react-toastify'
 
 interface CreateExpenseDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSubmit: (data: {
-    description: string
-    amount: number
-    paidBy: string
-    date: string
-  }) => void
-  members: Member[]
+  onSubmit: (data: { description: string; amount: number }) => Promise<boolean>
+  isLoading?: boolean
 }
 
 export function CreateExpenseDialog({
   open,
   onOpenChange,
   onSubmit,
-  members,
+  isLoading = false,
 }: CreateExpenseDialogProps) {
   const [description, setDescription] = useState('')
   const [amount, setAmount] = useState('')
-  const [paidBy, setPaidBy] = useState('')
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0])
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     const newErrors: Record<string, string> = {}
@@ -71,32 +50,24 @@ export function CreateExpenseDialog({
       newErrors.amount = 'Amount must be a positive number'
     }
 
-    if (!paidBy) {
-      newErrors.paidBy = 'Please select who paid'
-    }
-
-    if (!date) {
-      newErrors.date = 'Date is required'
-    }
-
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
       return
     }
 
-    onSubmit({
+    const success = await onSubmit({
       description,
       amount: Number.parseFloat(amount),
-      paidBy,
-      date,
     })
 
-    // Reset form
-    setDescription('')
-    setAmount('')
-    setPaidBy('')
-    setDate(new Date().toISOString().split('T')[0])
-    setErrors({})
+    if (success) {
+      toast.success('Expense added successfully!')
+      // Reset form on successful submission
+      setDescription('')
+      setAmount('')
+      setErrors({})
+      onOpenChange(false)
+    }
   }
 
   return (
@@ -120,6 +91,7 @@ export function CreateExpenseDialog({
                   setDescription(e.target.value)
                   setErrors({ ...errors, description: '' })
                 }}
+                disabled={isLoading}
               />
               {errors.description && (
                 <p className="text-sm text-destructive">{errors.description}</p>
@@ -139,55 +111,25 @@ export function CreateExpenseDialog({
                   setAmount(e.target.value)
                   setErrors({ ...errors, amount: '' })
                 }}
+                disabled={isLoading}
               />
               {errors.amount && (
                 <p className="text-sm text-destructive">{errors.amount}</p>
               )}
             </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="paidBy">Paid by</Label>
-              <Select
-                value={paidBy}
-                onValueChange={(value: string) => {
-                  setPaidBy(value)
-                  setErrors({ ...errors, paidBy: '' })
-                }}
-              >
-                <SelectTrigger id="paidBy">
-                  <SelectValue placeholder="Select who paid" />
-                </SelectTrigger>
-                <SelectContent>
-                  {members.map((member) => (
-                    <SelectItem key={member.id} value={member.id}>
-                      {member.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.paidBy && (
-                <p className="text-sm text-destructive">{errors.paidBy}</p>
-              )}
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="date">Date</Label>
-              <Input
-                id="date"
-                type="date"
-                value={date}
-                onChange={(e) => {
-                  setDate(e.target.value)
-                  setErrors({ ...errors, date: '' })
-                }}
-              />
-              {errors.date && (
-                <p className="text-sm text-destructive">{errors.date}</p>
-              )}
-            </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Add expense</Button>
+            <Button type="submit" disabled={isLoading}>
+              {' '}
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Adding...
+                </>
+              ) : (
+                'Add expense'
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
