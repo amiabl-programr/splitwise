@@ -148,7 +148,7 @@ const Signup = () => {
               </div>
               <div className="text-black text-sm flex gap-1 flex-col">
                 <p>Requirement</p>
-                <p>Password must not be less than 6 characters long</p>
+                <p>Password must not be less than 10 characters long</p>
                 <p>passsword must contain a uppercase and lowercase</p>
                 <p>passsword must contain a special character</p>
               </div>
