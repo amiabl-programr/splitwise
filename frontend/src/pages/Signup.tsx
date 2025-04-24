@@ -52,12 +52,12 @@ const Signup = () => {
             <img src={signupBg} alt="" className="w-full object-contain" />
           </div>
           {/* Right div */}
-          <div className="w-[40%] !py-10 !px-14 flex flex-col max-sm:!p-3 max-sm:w-full">
-            <h1 className="font-medium text-2xl !mb-5">Sign up</h1>
+          <div className="w-[40%] max-h-screen !px-14 flex flex-col max-sm:!p-3 max-sm:w-full">
+            <h1 className="font-medium text-2xl !mb-1">Sign up</h1>
             <p className="text-[#000000] text-base font-normal leading-full">
               If you already have an account register{' '}
             </p>
-            <p className="text-[#000000] text-base font-normal leading-full !mb-7">
+            <p className="text-[#000000] text-base font-normal leading-full !mb-0.5">
               You can
               <span className="text-[#FF432A] !ml-1.5">
                 <Link to="/login">Login here !</Link>
@@ -66,7 +66,7 @@ const Signup = () => {
             {/* Form Fields */}
             <form onSubmit={handleSubmit(onSubmit)} className="w-full">
               {/* email field */}
-              <div className="relative !mt-3 !mb-5">
+              <div className="relative !mt-2 !mb-4">
                 <label
                   htmlFor="email"
                   className="text-sm !mb-2 font-medium leading-full"
@@ -93,7 +93,7 @@ const Signup = () => {
                 )}
               </div>
               {/* username field */}
-              <div className="relative !mb-6">
+              <div className="relative !mb-4">
                 <label
                   htmlFor="username"
                   className="text-sm !mb-2 font-medium leading-full"
@@ -128,7 +128,7 @@ const Signup = () => {
                   Password{' '}
                 </label>
                 <Lock
-                  className="absolute left-0 bottom-2 peer-checked:text-blue-500"
+                  className="absolute left-0 !bottom-2 peer-checked:text-blue-500"
                   color="#000000"
                   size={16}
                 />
@@ -141,13 +141,19 @@ const Signup = () => {
                   placeholder="Enter your Password"
                 />
                 {errors.password?.message && (
-                  <p className="absolute text-red-700 text-sm">
+                  <p className="absolute text-red-700 text-sm !mb-2">
                     {errors.password?.message}
                   </p>
                 )}
               </div>
+              <div className="text-black text-sm flex gap-1 flex-col">
+                <p>Requirement</p>
+                <p>Password must not be less than 10 characters long</p>
+                <p>passsword must contain a uppercase and lowercase</p>
+                <p>passsword must contain a special character</p>
+              </div>
               {/* confirm passowrd field */}
-              <div className="relative !mb-6">
+              <div className="relative !mb-4">
                 <label
                   htmlFor="confirm-password"
                   className="text-sm !mb-2 font-medium leading-full"
@@ -168,14 +174,14 @@ const Signup = () => {
                   placeholder="Confirm your Password"
                 />
                 {errors.confirmPassword?.message && (
-                  <p className="!mb-4 text-sm font-red-700 absolute">
+                  <p className="!mb-4 text-sm text-red-700 absolute">
                     {errors.confirmPassword?.message}
                   </p>
                 )}
               </div>
               <button
                 type="submit"
-                className={`w-full cursor-pointer bg-[#FF432A] text-[#FFFFFF] shadow-lg backdrop-blur-md font-normal text-base rounded-full !py-2 ${isPending ? '!cursor-not-allowed opacity-50' : ''}`}
+                className={`w-full cursor-pointer bg-[#FF432A] text-[#FFFFFF] !mt-1.5 shadow-lg backdrop-blur-md font-normal text-base rounded-full !py-2 ${isPending ? '!cursor-not-allowed opacity-50' : ''}`}
               >
                 {isPending ? 'loading' : 'Register'}
               </button>

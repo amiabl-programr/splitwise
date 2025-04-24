@@ -1,26 +1,31 @@
 import { z } from 'zod'
 
-const passwordValidation = /^(?=.*[^a-zA-Z0-9]).{6,}$/
+// const passwordValidation = /^(?=.*[^a-zA-Z0-9]).{6,}$/
+const passwordValidation =
+  /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[~!@#$%^&*_+\-=|\\{}[\]:;"<>.,?/]).{10,}$/
+// const passwordValidation = /^/
 
 const userSchema = z.object({
   username: z
     .string()
-    .min(1, 'username is required')
-    .min(2, 'Name must be atleast 2 characters long'),
+    .min(1, 'Username is required')
+    .min(2, 'Name must be at least 2 characters long'),
   email: z.string().email('Invalid Email Address'),
   password: z.string().regex(passwordValidation, {
     message:
-      'password must contain minimum of 6 characters and a special charcter',
+      'Password must be at least 6 characters and include a special character',
   }),
   confirmPassword: z.string(),
 })
 
-const refinedSchema = userSchema.refine(
-  (data) => data.password === data.confirmPassword,
-  {
+const refinedSchema = userSchema
+  .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
     path: ['confirmPassword'],
-  }
-)
+  })
+  .refine((data) => data.password !== data.email, {
+    message: 'Password must not be the same as email',
+    path: ['password'],
+  })
 
 export default refinedSchema

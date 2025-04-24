@@ -6,6 +6,7 @@ import { ProtectedLayout } from './route/protected-route'
 import Dashboard from './pages/dashboard'
 import { ToastContainer } from 'react-toastify'
 import LoginPage from './pages/Login'
+import ForgotPassword from './pages/ForgotPassword'
 
 const App: React.FC = () => {
   return (
@@ -20,6 +21,8 @@ const App: React.FC = () => {
         <Route element={<ProtectedLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
+
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<LoginPage />} />
