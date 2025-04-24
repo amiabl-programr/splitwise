@@ -1,7 +1,9 @@
 import { z } from 'zod'
 
 // const passwordValidation = /^(?=.*[^a-zA-Z0-9]).{6,}$/
-const passwordValidation = /^/
+const passwordValidation =
+  /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[~!@#$%^&*_+\-=|\\{}[\]:;"<>.,?/]).{10,}$/
+// const passwordValidation = /^/
 
 const userSchema = z.object({
   username: z
