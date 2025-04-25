@@ -219,7 +219,7 @@ This README provides a straightforward, example-driven guide to the Expense-Shar
   }
   ```
 
-**GET `/groups/:groupId/expenses`**
+**GET `/:groupId/expenses`**
 - **Purpose:** Get all expenses in a group with enriched user info.
 - **Auth:** Requires session cookie.
 - **Success Response (200):**
