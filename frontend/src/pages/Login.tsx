@@ -55,10 +55,6 @@ export default function LoginPage() {
     }
   }
 
-  const handleGoogleSignIn = async () => {
-    console.log('waiting...')
-  }
-
   const [showPassword, setShowPassword] = useState(false)
 
   return (
@@ -150,19 +146,6 @@ export default function LoginPage() {
               ) : (
                 'Login'
               )}
-            </button>
-
-            <div className="text-center text-gray-400 text-sm">
-              or continue with
-            </div>
-
-            <button
-              type="button"
-              onClick={handleGoogleSignIn}
-              className="w-full flex items-center justify-center gap-1 border py-2 rounded-full hover:bg-gray-100 transition"
-            >
-              <img src="/img/google.png" alt="" className="w-[20px] h-[20px]" />
-              Continue with Google
             </button>
           </form>
         </div>
