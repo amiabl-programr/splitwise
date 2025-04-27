@@ -34,6 +34,7 @@ async function login(req, res) {
       uid: decoded.uid, 
       email: decoded.email
     }});
+    console.log(user);
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ success: false, message: 'Login failed' });
@@ -88,6 +89,7 @@ async function signup(req, res){
       uid: data.localId, 
       email: data.email
   }  });
+  console.log(user);
 }
 
 async function getUser(req,res) {
@@ -144,9 +146,18 @@ async function forgotPassword(req, res){
 }
 
 
-async function logout(req, res){
-    res.clearCookie("session");
-    res.json({ success: true, message: "Logged out" });
+async function logout(req, res) {
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  res.clearCookie('session', {
+    httpOnly: true,
+    secure: isProduction, // secure true only in production
+    sameSite: isProduction ? 'None' : 'Lax',
+    domain: isProduction ? 'behance-builders.vercel.app' : undefined, // set domain only in production
+    path: '/',
+  });
+
+  res.json({ success: true, message: 'Logged out' });
 }
 
 
