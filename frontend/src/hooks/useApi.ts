@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { handleApiError } from '@/api/group-api'
 import type { ErrorResponse, FormattedError } from '../types/api'
 import { AxiosError } from 'axios'
+import { toast } from 'react-toastify'
 
 // Generic hook for API calls
 export function useApi<T, P extends unknown[]>(
@@ -23,6 +24,7 @@ export function useApi<T, P extends unknown[]>(
       return result
     } catch (err) {
       const formattedError = handleApiError(err as AxiosError<ErrorResponse>)
+      toast.error(formattedError.message)
       setError(formattedError)
       throw formattedError
     } finally {
