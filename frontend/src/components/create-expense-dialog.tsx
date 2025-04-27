@@ -32,6 +32,24 @@ export function CreateExpenseDialog({
   const [amount, setAmount] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
 
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Remove any non-digit or non-decimal characters except commas
+    const value = e.target.value.replace(/[^\d.,]/g, '')
+
+    // Parse the numeric value
+    const numericValue = value.replace(/,/g, '')
+
+    // Only update if it's empty or a valid number
+    if (numericValue === '' || !isNaN(parseFloat(numericValue))) {
+      // Format with commas for thousands
+      const parts = numericValue.split('.')
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      setAmount(parts.join('.'))
+    }
+
+    setErrors({ ...errors, amount: '' })
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -57,7 +75,7 @@ export function CreateExpenseDialog({
 
     const success = await onSubmit({
       description,
-      amount: Number.parseFloat(amount),
+      amount: Number.parseFloat(amount.replace(/,/g, '')),
     })
 
     if (success) {
@@ -100,19 +118,21 @@ export function CreateExpenseDialog({
 
             <div className="grid gap-2">
               <Label htmlFor="amount">Amount</Label>
-              <Input
-                id="amount"
-                type="number"
-                step="0.01"
-                min="0.01"
-                placeholder="0.00"
-                value={amount}
-                onChange={(e) => {
-                  setAmount(e.target.value)
-                  setErrors({ ...errors, amount: '' })
-                }}
-                disabled={isLoading}
-              />
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2">
+                  ₦
+                </span>
+                <Input
+                  id="amount"
+                  type="text"
+                  placeholder="0.00"
+                  value={amount}
+                  className="pl-7"
+                  onChange={(e) => handleAmountChange(e)}
+                  disabled={isLoading}
+                  aria-label="Amount in Naira"
+                />
+              </div>
               {errors.amount && (
                 <p className="text-sm text-destructive">{errors.amount}</p>
               )}

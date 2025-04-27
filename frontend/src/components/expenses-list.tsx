@@ -1,15 +1,17 @@
-import { Plus, Receipt, Trash2, Loader2 } from 'lucide-react'
+import { Plus, Receipt, Trash2, Loader2, Edit } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Expense, Member } from '@/types/type'
 import { ExpenseItemSkeleton } from './skeleton-loaders'
+import { formatMoney } from '@/utils/helper'
 
 interface ExpensesListProps {
   expenses: Expense[]
   members: Member[]
   onAddExpense: () => void
   onDeleteExpense: (expense: Expense) => void
+  onEditExpense: (expense: Expense) => void
   isLoading?: boolean
 }
 
@@ -17,6 +19,7 @@ export default function ExpensesList({
   expenses,
   members,
   onAddExpense,
+  onEditExpense,
   onDeleteExpense,
   isLoading = false,
 }: ExpensesListProps) {
@@ -55,26 +58,40 @@ export default function ExpensesList({
         ) : (
           expenses.map((expense) => (
             <Card key={expense.id}>
-              <CardHeader className="p-4 pb-2">
+              <CardHeader>
                 <div className="flex justify-between">
                   <CardTitle className="text-lg">
                     {expense.description}
                   </CardTitle>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => onDeleteExpense(expense)}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    )}
-                  </Button>
+                  <div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onDeleteExpense(expense)}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      )}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      disabled={isLoading}
+                      onClick={() => onEditExpense(expense)}
+                    >
+                      {isLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Edit className="h-4 w-4 text-muted-foreground" />
+                      )}
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-4 pt-0">
+              <CardContent>
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2">
                     <span>Paid by</span>
@@ -83,7 +100,7 @@ export default function ExpensesList({
                     </Badge>
                   </div>
                   <span className="text-lg font-semibold">
-                    ${expense.amount.toFixed(2)}
+                    {formatMoney(expense.amount)}
                   </span>
                 </div>
               </CardContent>
