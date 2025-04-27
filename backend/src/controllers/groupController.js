@@ -88,29 +88,48 @@ async function inviteUser(req, res) {
   }
 
   try {
-    // Try to get the user by email
     const userRecord = await admin.auth().getUserByEmail(email);
     const userId = userRecord.uid;
 
-    const groupDoc = groupDatabaseReference.doc(groupId);
-    const groupSnap = await groupDoc.get();
+    const groupRef = groupDatabaseReference.doc(groupId);
 
-    if (!groupSnap.exists) {
+    await db.runTransaction(async (transaction) => {
+      const groupSnap = await transaction.get(groupRef);
+
+      if (!groupSnap.exists) {
+        throw new Error('Group not found');
+      }
+
+      const groupData = groupSnap.data();
+      const members = groupData.members || [];
+
+      if (members.includes(userId)) {
+        throw new Error('User is already a member of the group');
+      }
+
+      transaction.update(groupRef, {
+        members: admin.firestore.FieldValue.arrayUnion(userId),
+      });
+    });
+
+    return res.status(200).json({ success: true, message: 'User invited successfully' });
+
+  } catch (err) {
+    console.error('Invite error:', err);
+
+    if (err.message === 'Group not found') {
       return res.status(404).json({ success: false, message: 'Group not found' });
     }
 
-    await groupDoc.update({
-      members: admin.firestore.FieldValue.arrayUnion(userId),
-    });
+    if (err.message === 'User is already a member of the group') {
+      return res.status(400).json({ success: false, message: 'User is already a member of the group' });
+    }
 
-    res.status(200).json({ success: true, message: 'User invited' });
-  } catch (err) {
     if (err.code === 'auth/user-not-found') {
       return res.status(404).json({ success: false, message: 'User with this email does not exist' });
     }
 
-    console.error('Invite error:', err);
-    res.status(500).json({ success: false, message: 'Something went wrong' });
+    return res.status(500).json({ success: false, message: 'Something went wrong' });
   }
 }
 
