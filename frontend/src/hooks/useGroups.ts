@@ -63,7 +63,7 @@ export function useGroups() {
 
         setGroups(transformedGroups)
         if (transformedGroups.length > 0) {
-          setSelectedGroup(transformedGroups[transformedGroups.length])
+          setSelectedGroup(transformedGroups[0])
           if (transformedGroups[0].id) {
             fetchGroupMembers(transformedGroups[0].id)
             fetchGroupExpenses(transformedGroups[0].id)
