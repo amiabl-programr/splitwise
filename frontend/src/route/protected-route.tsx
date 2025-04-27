@@ -7,7 +7,16 @@ export const ProtectedLayout: React.FC = () => {
   const location = useLocation()
 
   if (isLoading) {
-    return <div className="loading-container">Loading...</div>
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="relative">
+          <span className="inline-block h-12 w-12 rounded-full border-4 border-black border-t-transparent animate-spin shadow-lg" />
+          <span className="absolute inset-0 flex items-center justify-center">
+            <span className="block h-4 w-4 bg-black rounded-full opacity-80 animate-pulse" />
+          </span>
+        </div>
+      </div>
+    )
   }
 
   if (!isAuthenticated) {

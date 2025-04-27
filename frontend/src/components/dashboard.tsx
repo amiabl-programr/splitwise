@@ -183,25 +183,21 @@ export default function Dashboard() {
   return (
     <div className="flex min-h-screen bg-background">
       {isLoading ? (
-        <div className="hidden md:block w-64 border-r bg-card">
+        <div className="hidden fixed inset-y-0 left-0 md:block w-64 border-r bg-card z-10">
           <SidebarSkeleton />
         </div>
       ) : (
-        <Suspense fallback={<SidebarSkeleton />}>
-          <Sidebar
-            groups={groups}
-            selectedGroup={selectedGroup}
-            setSelectedGroup={setSelectedGroup}
-            onCreateGroup={() => openDialog('createGroup')}
-            isLoading={loadingStates.creatingGroup}
-          />
-        </Suspense>
+        <Sidebar
+          groups={groups}
+          selectedGroup={selectedGroup}
+          setSelectedGroup={setSelectedGroup}
+          onCreateGroup={() => openDialog('createGroup')}
+          isLoading={loadingStates.creatingGroup}
+        />
       )}
-
-      <div className="flex-1 flex flex-col mt-10 md:mt-0">
+      <div className="flex-1 flex flex-col md:ml-64 w-full mt-10 md:mt-0">
         {renderMainContent()}
       </div>
-
       {dialogs}
     </div>
   )
