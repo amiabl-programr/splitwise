@@ -268,9 +268,6 @@ export function useGroups() {
 
     setLoadingStates((prev) => ({ ...prev, editingExpense: true }))
     try {
-      console.log(data)
-      console.log(selectedGroup)
-      console.log(expenseId)
       await updateExpenseApi.execute(selectedGroup.id, expenseId, {
         description: data.description,
         amount: data.amount,
