@@ -162,7 +162,7 @@ export const handleApiError = (
         return { type: errorType, message: errorMessage || 'Invalid input' }
       case 401:
         errorType = 'auth'
-        return { type: errorType, message: 'Authentication required' }
+        return { type: errorType, message: errorMessage }
       case 403:
         errorType = 'permission'
         return {
@@ -171,7 +171,7 @@ export const handleApiError = (
         }
       case 404:
         errorType = 'notFound'
-        return { type: errorType, message: 'Resource not found' }
+        return { type: errorType, message: errorMessage }
       case 500:
       default:
         errorType = 'server'
