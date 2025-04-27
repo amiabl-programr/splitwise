@@ -32,6 +32,7 @@ export default function Dashboard() {
     handleDeleteGroup,
     handleInviteMember,
     handleCreateExpense,
+    handleUpdateExpense,
     handleDeleteExpense,
     calculateBalances,
     refreshData,
@@ -45,6 +46,7 @@ export default function Dashboard() {
       onDeleteGroup: handleDeleteGroup,
       onInviteMember: (data) => handleInviteMember(data.email),
       onCreateExpense: handleCreateExpense,
+      onEditExpense: handleUpdateExpense,
       onDeleteExpense: handleDeleteExpense,
     },
     {
@@ -53,6 +55,7 @@ export default function Dashboard() {
       deletingGroup: loadingStates.deletingGroup,
       invitingMember: loadingStates.invitingMember,
       creatingExpense: loadingStates.creatingExpense,
+      editingExpense: loadingStates.editingExpense,
       deletingExpense: loadingStates.deletingExpense,
     }
   )
@@ -127,10 +130,15 @@ export default function Dashboard() {
                     dialogStates.setExpenseToDelete(expense)
                     openDialog('deleteExpense')
                   }}
+                  onEditExpense={(expense) => {
+                    dialogStates.setExpenseToEdit(expense)
+                    openDialog('editExpense')
+                  }}
                   isLoading={
                     loadingStates.creatingExpense ||
                     loadingStates.deletingExpense ||
-                    loadingStates.fetchingExpenses
+                    loadingStates.fetchingExpenses ||
+                    loadingStates.editingExpense
                   }
                 />
               </Suspense>

@@ -7,6 +7,7 @@ import {
   useUpdateGroup,
   useCreateExpense,
   useDeleteExpense,
+  useUpdateExpense,
   useInviteUser,
   useGetGroupMembers,
   useGetGroupExpenses,
@@ -25,6 +26,7 @@ export function useGroups() {
     fetchingMembers: false,
     fetchingExpenses: false,
     creatingExpense: false,
+    editingExpense: false,
     deletingExpense: false,
     invitingMember: false,
   })
@@ -37,6 +39,7 @@ export function useGroups() {
   const getGroupMembersApi = useGetGroupMembers()
   const getGroupExpensesApi = useGetGroupExpenses()
   const createExpenseApi = useCreateExpense()
+  const updateExpenseApi = useUpdateExpense()
   const deleteExpenseApi = useDeleteExpense()
   const inviteUserApi = useInviteUser()
 
@@ -254,6 +257,33 @@ export function useGroups() {
     }
   }
 
+  const handleUpdateExpense = async (
+    expenseId: string,
+    data: {
+      description: string
+      amount: number
+    }
+  ) => {
+    if (!selectedGroup) return false
+
+    setLoadingStates((prev) => ({ ...prev, editingExpense: true }))
+    try {
+      await updateExpenseApi.execute(selectedGroup.id, expenseId, {
+        description: data.description,
+        amount: data.amount,
+      })
+
+      // Refresh expenses after updating one
+      await fetchGroupExpenses(selectedGroup.id)
+      return true
+    } catch (error) {
+      console.error('Failed to update expense:', error)
+      return false
+    } finally {
+      setLoadingStates((prev) => ({ ...prev, editingExpense: false }))
+    }
+  }
+
   const handleDeleteExpense = async (expenseId: string) => {
     if (!selectedGroup) return false
 
@@ -337,6 +367,7 @@ export function useGroups() {
     handleUpdateGroup,
     handleDeleteGroup,
     handleInviteMember,
+    handleUpdateExpense,
     handleCreateExpense,
     handleDeleteExpense,
     calculateBalances,

@@ -1,5 +1,3 @@
-// components/BalancesPanel.tsx
-import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Card,
   CardHeader,
@@ -12,6 +10,8 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Balance } from '@/types/type'
 import { BalanceItemSkeleton } from './skeleton-loaders'
 import { Loader2 } from 'lucide-react'
+import { Badge } from './ui/badge'
+import { formatMoney } from '@/utils/helper'
 
 interface BalancesPanelProps {
   balances: Balance[]
@@ -36,7 +36,7 @@ export default function BalancesPanel({
           <CardDescription>Based on all expenses in this group</CardDescription>
         </CardHeader>
         <CardContent>
-          <ScrollArea className="h-[300px]">
+          <div className="h-[300px]">
             <div className="space-y-4">
               {isLoading ? (
                 <>
@@ -52,7 +52,7 @@ export default function BalancesPanel({
                 balances.map(({ member, balance }) => (
                   <div
                     key={member.uid}
-                    className="flex items-center justify-between"
+                    className="flex items-center justify-between flex-wrap"
                   >
                     <div className="flex items-center gap-2">
                       <Avatar className="h-8 w-8">
@@ -60,32 +60,46 @@ export default function BalancesPanel({
                           {member.username.charAt(0)}
                         </AvatarFallback>
                       </Avatar>
-                      <span>{member.username}</span>
+                      <span className="truncate max-w-[100px] text-xs font-bold">
+                        {member.username.length > 5
+                          ? `${member.username.substring(0, 5)}...`
+                          : member.username}
+                      </span>
                     </div>
-                    <span
-                      className={
-                        balance > 0
-                          ? 'text-green-600 font-medium'
-                          : balance < 0
-                            ? 'text-red-600 font-medium'
-                            : ''
-                      }
-                    >
-                      {balance > 0
-                        ? `gets $${balance.toFixed(2)}`
-                        : balance < 0
-                          ? `owes $${Math.abs(balance).toFixed(2)}`
-                          : `settled up`}
-                    </span>
+
+                    <div className="flex items-center gap-2">
+                      {balance > 0 ? (
+                        <Badge
+                          variant="outline"
+                          className="bg-green-50 text-green-700 border-green-200"
+                        >
+                          gets {formatMoney(balance)}
+                        </Badge>
+                      ) : balance < 0 ? (
+                        <Badge
+                          variant="outline"
+                          className="bg-red-50 text-red-700 border-red-200"
+                        >
+                          owes {formatMoney(-balance)}
+                        </Badge>
+                      ) : (
+                        <Badge
+                          variant="outline"
+                          className="bg-gray-50 text-gray-700 border-gray-200"
+                        >
+                          settled up
+                        </Badge>
+                      )}
+                    </div>
                   </div>
                 ))
               )}
             </div>
-          </ScrollArea>
+          </div>
         </CardContent>
         <CardFooter className="bg-muted/50 flex justify-between">
           <span className="text-sm text-muted-foreground">Total expenses</span>
-          <span className="font-medium">${totalExpenses.toFixed(2)}</span>
+          <span className="font-medium">{formatMoney(totalExpenses)}</span>
         </CardFooter>
       </Card>
     </>

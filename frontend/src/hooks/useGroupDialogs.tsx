@@ -6,10 +6,12 @@ import { InviteDialog } from '@/components/invite-dialog'
 import { ConfirmDialog } from '@/components/confirm-dialog'
 import { Group, Expense } from '@/types/type'
 import { EditGroupDialog } from '@/components/edit-group-dialog'
+import { EditExpenseDialog } from '@/components/edit-expense-dialog'
 
 type DialogName =
   | 'createGroup'
   | 'createExpense'
+  | 'editExpense'
   | 'invite'
   | 'editGroup'
   | 'deleteGroup'
@@ -21,12 +23,19 @@ type DialogHandlers = {
     description?: string
   }) => Promise<boolean>
   onEditGroup: (updatedGroup: { name: string }) => Promise<boolean>
-  onDeleteGroup: (groupId: string) => Promise<boolean>
+  onDeleteGroup: () => Promise<boolean>
   onInviteMember: (newMember: { email: string }) => Promise<boolean>
   onCreateExpense: (data: {
     description: string
     amount: number
   }) => Promise<boolean>
+  onEditExpense: (
+    expenseId: string,
+    data: {
+      description: string
+      amount: number
+    }
+  ) => Promise<boolean>
   onDeleteExpense: (expenseId: string) => Promise<boolean>
 }
 
@@ -39,6 +48,7 @@ export function useGroupDialogs(
     deletingGroup: boolean
     invitingMember: boolean
     creatingExpense: boolean
+    editingExpense: boolean
     deletingExpense: boolean
   }
 ) {
@@ -46,6 +56,7 @@ export function useGroupDialogs(
   const [openDialogs, setOpenDialogs] = useState<Record<DialogName, boolean>>({
     createGroup: false,
     createExpense: false,
+    editExpense: false,
     invite: false,
     editGroup: false,
     deleteGroup: false,
@@ -54,6 +65,7 @@ export function useGroupDialogs(
 
   // Dialog data states
   const [expenseToDelete, setExpenseToDelete] = useState<Expense | null>(null)
+  const [expenseToEdit, setExpenseToEdit] = useState<Expense | null>(null)
 
   const openDialog = (dialogName: DialogName) => {
     setOpenDialogs((prev) => ({ ...prev, [dialogName]: true }))
@@ -70,6 +82,7 @@ export function useGroupDialogs(
   const closeAllDialogs = () => {
     setOpenDialogs({
       createGroup: false,
+      editExpense: false,
       createExpense: false,
       invite: false,
       editGroup: false,
@@ -97,6 +110,18 @@ export function useGroupDialogs(
             isLoading={loadingStates.creatingExpense}
           />
 
+          <EditExpenseDialog
+            open={openDialogs.editExpense}
+            onOpenChange={(open) => setDialogOpen('editExpense', open)}
+            expense={expenseToEdit}
+            onSubmit={(data) =>
+              expenseToEdit
+                ? handlers.onEditExpense(expenseToEdit.id, data)
+                : Promise.resolve(false)
+            }
+            isLoading={loadingStates.editingExpense}
+          />
+
           <InviteDialog
             open={openDialogs.invite}
             onOpenChange={(open) => setDialogOpen('invite', open)}
@@ -117,7 +142,7 @@ export function useGroupDialogs(
             onOpenChange={(open) => setDialogOpen('deleteGroup', open)}
             title="Delete Group"
             description={`Are you sure you want to delete "${selectedGroup.name}"? This action cannot be undone.`}
-            onConfirm={() => handlers.onDeleteGroup(selectedGroup.id)}
+            onConfirm={() => handlers.onDeleteGroup()}
             isLoading={loadingStates.deletingGroup}
           />
 
@@ -143,6 +168,8 @@ export function useGroupDialogs(
     dialogStates: {
       expenseToDelete,
       setExpenseToDelete,
+      expenseToEdit,
+      setExpenseToEdit,
     },
     openDialog,
     closeDialog,
