@@ -1,5 +1,8 @@
 import React from 'react'
-import { Card, CardContent } from '../ui/card'
+import { CardContent } from '../ui/card'
+import { StaggerContainer } from '../animations/stagger-container'
+import { MotionItem } from '../animations/motion-item'
+import { MotionCard } from '../animations/motion-card'
 
 const What: React.FC = () => {
   return (
@@ -12,40 +15,44 @@ const What: React.FC = () => {
         for everyone.
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <Card className="rounded-xl shadow-lg hover:shadow-xl transition-shadow">
-          <CardContent className="p-8">
-            <div className="text-4xl mb-4">🏠</div>
-            <h3 className="text-xl font-bold mb-2">Roommates</h3>
-            <p className="text-gray-600">
-              Track shared household expenses like rent, utilities, groceries,
-              and split them fairly.
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-xl shadow-lg hover:shadow-xl transition-shadow">
-          <CardContent className="p-8">
-            <div className="text-4xl mb-4">✈️</div>
-            <h3 className="text-xl font-bold mb-2">Travel Buddies</h3>
-            <p className="text-gray-600">
-              Keep track of who paid for hotels, meals, and activities during
-              your trips.
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-xl shadow-lg hover:shadow-xl transition-shadow">
-          <CardContent className="p-8">
-            <div className="text-4xl mb-4">🎉</div>
-            <h3 className="text-xl font-bold mb-2">Event Planners</h3>
-            <p className="text-gray-600">
-              Organize group events and split costs for venues, food, and
-              decorations.
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+      <StaggerContainer className="grid md:grid-cols-3 gap-8">
+        <MotionItem>
+          <MotionCard className="rounded-xl bg-white shadow-lg hover:shadow-xl transition-shadow">
+            <CardContent className="p-8">
+              <div className="text-4xl mb-4">🏠</div>
+              <h3 className="text-xl font-bold mb-2">Roommates</h3>
+              <p className="text-gray-600">
+                Track shared household expenses like rent, utilities, groceries,
+                and split them fairly.
+              </p>
+            </CardContent>
+          </MotionCard>
+        </MotionItem>
+        <MotionItem>
+          <MotionCard className="rounded-xl bg-white shadow-lg hover:shadow-xl transition-shadow">
+            <CardContent className="p-8">
+              <div className="text-4xl mb-4">✈️</div>
+              <h3 className="text-xl font-bold mb-2">Travel Buddies</h3>
+              <p className="text-gray-600">
+                Keep track of who paid for hotels, meals, and activities during
+                your trips.
+              </p>
+            </CardContent>
+          </MotionCard>
+        </MotionItem>
+        <MotionItem>
+          <MotionCard className="rounded-xl bg-white shadow-lg hover:shadow-xl transition-shadow">
+            <CardContent className="p-8">
+              <div className="text-4xl mb-4">🎉</div>
+              <h3 className="text-xl font-bold mb-2">Event Planners</h3>
+              <p className="text-gray-600">
+                Organize group events and split costs for venues, food, and
+                decorations.
+              </p>
+            </CardContent>
+          </MotionCard>
+        </MotionItem>
+      </StaggerContainer>
     </section>
   )
 }

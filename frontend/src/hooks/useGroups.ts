@@ -152,11 +152,41 @@ export function useGroups() {
     setLoadingStates((prev) => ({ ...prev, deletingGroup: true }))
     try {
       await deleteGroupApi.execute(selectedGroup.id)
-      const updatedGroups = groups.filter(
-        (group) => group.id !== selectedGroup.id
+
+      // Fetch the latest groups after deletion
+      const fetchedGroups = await getGroupsApi.execute()
+
+      // Transform to our app's Group type
+      const transformedGroups = fetchedGroups.map(
+        (group: { id: string; title: string; description: string }) => ({
+          id: group.id,
+          name: group.title,
+          description: group.description,
+          members: [],
+          expenses: [],
+        })
       )
-      setGroups(updatedGroups)
-      setSelectedGroup(updatedGroups.length > 0 ? updatedGroups[0] : null)
+
+      // Set groups first
+      setGroups(transformedGroups)
+
+      // Clear the selected group before setting a new one
+      setSelectedGroup(null)
+
+      // Then set selected group if groups exist
+      if (transformedGroups.length > 0) {
+        // Use setTimeout to ensure state updates properly
+        setTimeout(() => {
+          setSelectedGroup(transformedGroups[0])
+          fetchGroupMembers(transformedGroups[0].id)
+          fetchGroupExpenses(transformedGroups[0].id)
+        }, 0)
+      } else {
+        // Clear members and expenses if no groups exist
+        setGroupMembers([])
+        setGroupExpenses([])
+      }
+
       return true
     } catch (error) {
       console.error('Failed to delete group:', error)

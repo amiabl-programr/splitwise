@@ -41,7 +41,8 @@ export default function Sidebar({
 
   const SidebarContent = () => (
     <div className="h-full flex flex-col">
-      <div className="p-4 border-b">
+      {/* Header with user info */}
+      <div className="p-4 border-b shrink-0">
         <div className="flex items-center gap-3 mb-3">
           <Avatar className="h-10 w-10">
             <AvatarImage
@@ -101,8 +102,8 @@ export default function Sidebar({
       </div>
 
       {/* App Title and Create Button */}
-      <div className="p-4">
-        <div className="flex justify-between items-center mb-4">
+      <div className="px-4 py-2 shrink-0">
+        <div className="flex justify-between items-center">
           <h2 className="font-semibold text-lg">Split Bill</h2>
         </div>
         <Button className="w-full" onClick={onCreateGroup}>
@@ -111,9 +112,10 @@ export default function Sidebar({
         </Button>
       </div>
 
-      <Separator />
-      <Separator />
-      <ScrollArea className="flex-1">
+      <Separator className="shrink-0" />
+
+      {/* Scrollable groups list */}
+      <ScrollArea className="flex-1 overflow-auto">
         <div className="p-4 space-y-1">
           {isLoading ? (
             <SidebarSkeleton />
@@ -140,7 +142,7 @@ export default function Sidebar({
         </div>
       </ScrollArea>
       {/* Footer with logout */}
-      <div className="p-4 border-t mt-auto">
+      <div className="p-4 border-t mt-auto shrink-0">
         <Button
           variant="outline"
           size="sm"
@@ -173,7 +175,7 @@ export default function Sidebar({
       </Sheet>
 
       {/* Desktop Sidebar */}
-      <div className="hidden md:block w-64 border-r bg-card">
+      <div className="hidden fixed inset-y-0 left-0 md:block w-64 border-r bg-card z-10">
         <SidebarContent />
       </div>
     </>
