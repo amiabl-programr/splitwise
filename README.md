@@ -27,6 +27,9 @@ Split-The-Cost is a web application that helps users track and divide shared exp
 - **Runtime**: Node.js
 - **Database & Authentication**: Firebase
 
+### Figma Link
+- [Design on Figma](https://www.figma.com/design/I9HUeuwTADDmnc9iFsers2/Split-The-Cost--v1?node-id=0-1&p=f)
+
 ## **Contributors**
 Add your name below if you're contributing to this project:
 
