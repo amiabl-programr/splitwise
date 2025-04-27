@@ -21,7 +21,7 @@ type DialogHandlers = {
     description?: string
   }) => Promise<boolean>
   onEditGroup: (updatedGroup: { name: string }) => Promise<boolean>
-  onDeleteGroup: (groupId: string) => Promise<boolean>
+  onDeleteGroup: () => Promise<boolean>
   onInviteMember: (newMember: { email: string }) => Promise<boolean>
   onCreateExpense: (data: {
     description: string
@@ -117,7 +117,7 @@ export function useGroupDialogs(
             onOpenChange={(open) => setDialogOpen('deleteGroup', open)}
             title="Delete Group"
             description={`Are you sure you want to delete "${selectedGroup.name}"? This action cannot be undone.`}
-            onConfirm={() => handlers.onDeleteGroup(selectedGroup.id)}
+            onConfirm={() => handlers.onDeleteGroup()}
             isLoading={loadingStates.deletingGroup}
           />
 

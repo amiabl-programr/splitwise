@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   UserPlus,
   Edit,
@@ -36,6 +37,25 @@ export default function GroupHeader({
   onAddExpense,
   isLoading = false,
 }: GroupHeaderProps) {
+  // Use state to control the dropdown menu
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+
+  const handleEdit = () => {
+    // Close dropdown first
+    setIsDropdownOpen(false)
+    // Use setTimeout to ensure dropdown is closed before modal opens
+    setTimeout(() => {
+      onEdit()
+    }, 0)
+  }
+
+  const handleDelete = () => {
+    setIsDropdownOpen(false)
+    setTimeout(() => {
+      onDelete()
+    }, 0)
+  }
+
   return (
     <header className="border-b p-4 bg-card flex justify-between items-center">
       <div>
@@ -71,18 +91,21 @@ export default function GroupHeader({
           )}
           {isLoading ? 'Adding...' : 'Add Expense'}
         </Button>
-        <DropdownMenu>
+        <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon">
               <MoreHorizontal className="h-5 w-5" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={onEdit}>
+            <DropdownMenuItem onClick={handleEdit}>
               <Edit className="h-4 w-4 mr-2" />
               Edit Group
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={onDelete} className="text-destructive">
+            <DropdownMenuItem
+              onClick={handleDelete}
+              className="text-destructive"
+            >
               <Trash2 className="h-4 w-4 mr-2" />
               Delete Group
             </DropdownMenuItem>
