@@ -104,9 +104,11 @@ export default function Dashboard() {
           <GroupHeader
             group={selectedGroup}
             members={groupMembers}
+            expenses={groupExpenses}
             onInvite={() => openDialog('invite')}
             onEdit={() => openDialog('editGroup')}
             onDelete={() => openDialog('deleteGroup')}
+            onAddExpense={() => openDialog('createExpense')}
             isLoading={
               loadingStates.updatingGroup || loadingStates.deletingGroup
             }

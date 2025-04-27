@@ -21,7 +21,7 @@ type DialogHandlers = {
     description?: string
   }) => Promise<boolean>
   onEditGroup: (updatedGroup: { name: string }) => Promise<boolean>
-  onDeleteGroup: () => Promise<boolean>
+  onDeleteGroup: (groupId: string) => Promise<boolean>
   onInviteMember: (newMember: { email: string }) => Promise<boolean>
   onCreateExpense: (data: {
     description: string
@@ -67,6 +67,17 @@ export function useGroupDialogs(
     setOpenDialogs((prev) => ({ ...prev, [dialogName]: isOpen }))
   }
 
+  const closeAllDialogs = () => {
+    setOpenDialogs({
+      createGroup: false,
+      createExpense: false,
+      invite: false,
+      editGroup: false,
+      deleteGroup: false,
+      deleteExpense: false,
+    })
+  }
+
   // Render all dialogs
   const dialogs = (
     <>
@@ -106,7 +117,7 @@ export function useGroupDialogs(
             onOpenChange={(open) => setDialogOpen('deleteGroup', open)}
             title="Delete Group"
             description={`Are you sure you want to delete "${selectedGroup.name}"? This action cannot be undone.`}
-            onConfirm={handlers.onDeleteGroup}
+            onConfirm={() => handlers.onDeleteGroup(selectedGroup.id)}
             isLoading={loadingStates.deletingGroup}
           />
 
@@ -135,5 +146,7 @@ export function useGroupDialogs(
     },
     openDialog,
     closeDialog,
+    setOpenDialogs,
+    closeAllDialogs,
   }
 }
